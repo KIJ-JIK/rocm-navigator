@@ -41,52 +41,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Gateway Service
+      - name: Build and Push Sandbox Compiler Container
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./apps/gateway/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/rocm-nav-gateway:latest
-          # Fail-safe if Dockerfile is missing, fallback to inline simulation build
-          no-cache: true
-
-      - name: Build and Push Scanner Service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./services/core-scanner/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/rocm-nav-scanner:latest
-
-      - name: Build and Push Synthesis Service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./services/llm-synthesis/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/rocm-nav-synthesis:latest
-
-      - name: Build and Push Sandbox Service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
+          context: ./services/sandbox-runtime
           file: ./services/sandbox-runtime/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/rocm-nav-sandbox:latest
-
-      - name: Build and Push Security Service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./services/security-audit/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/rocm-nav-security:latest
-
-      - name: Build and Push Telemetry Dashboard
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./apps/dashboard/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/rocm-nav-dashboard:latest
