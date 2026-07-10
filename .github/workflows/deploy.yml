@@ -38,7 +38,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: anshvasant
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and Push Sandbox Compiler Container
@@ -47,4 +47,4 @@ jobs:
           context: ./services/sandbox-runtime
           file: ./services/sandbox-runtime/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/rocm-nav-sandbox:latest
+          tags: anshvasant/rocm-nav-sandbox:latest
