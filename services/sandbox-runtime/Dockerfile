@@ -20,23 +20,10 @@ RUN echo "=== Verifying hipcc Version ===" && \
     hipcc --version | grep -q "${EXPECTED_ROCM_VERSION}" || \
     (echo "FAIL: hipcc version mismatch! Expected ROCm ${EXPECTED_ROCM_VERSION}" && exit 1)
 
-# Generate a minimal inline HIP smoke test file
-RUN cat << 'EOF' > smoke_test.cpp
-#include <hip/hip_runtime.h>
-#include <iostream>
-
-__global__ void smoke_kernel() {}
-
-int main() {
-    std::cout << "Validating HIP compilation pipeline..." << std::endl;
-    smoke_kernel<<<1, 1>>>();
-    hipDeviceSynchronize();
-    return 0;
-}
-EOF
-
-# Compile the test right inside the build step to ensure headers resolve
-RUN hipcc smoke_test.cpp -o smoke_test && rm -rf /tmp/hip_smoke_test
+# Generate a minimal inline HIP smoke test file and compile it
+RUN printf '#include <hip/hip_runtime.h>\n#include <iostream>\n__global__ void smoke_kernel() {}\nint main() {\n    std::cout << "Validating HIP compilation pipeline..." << std::endl;\n    smoke_kernel<<<1, 1>>>();\n    hipDeviceSynchronize();\n    return 0;\n}\n' > smoke_test.cpp && \
+    hipcc smoke_test.cpp -o smoke_test && \
+    rm -rf /tmp/hip_smoke_test
 
 # Set the final execution environment
 WORKDIR /workspace
