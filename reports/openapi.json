@@ -1,0 +1,443 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ROCm Navigator - Security & Reporting Gateway",
+    "description": "Backend microservice handling security static analysis, secret scanning, AMD TEE key derivation, compliance audits, and GitHub PR automation.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/security/scan": {
+      "post": {
+        "summary": "Per-file static security scan",
+        "description": "Audits already-translated HIP code for out-of-bound memory access patterns.",
+        "operationId": "post_security_scan_api_v1_security_scan_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/security/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "operationId": "health_check_api_v1_security_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/security/scan-repo": {
+      "post": {
+        "summary": "Scan repository directory for secrets",
+        "operationId": "scan_repo_api_v1_security_scan_repo_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepoScanPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/security/generate-report": {
+      "post": {
+        "summary": "Generate markdown report",
+        "operationId": "generate_report_api_v1_security_generate_report_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/security": {
+      "get": {
+        "summary": "Run Security Audit",
+        "description": "Runs secret scanners, static memory boundary audits, container compliance scans, and returns safety scores.",
+        "operationId": "get_security_security_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Security Security Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports": {
+      "get": {
+        "summary": "Get Compiled Reports",
+        "description": "Retrieves all generated system audit reports registered in the database.",
+        "operationId": "get_reports_reports_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response Get Reports Reports Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit": {
+      "post": {
+        "summary": "Trigger Full Workspace Audit & Report Generation",
+        "description": "Performs a full security sweep and compiles Markdown, PDF, and JSON reports in a single pipeline pass.",
+        "operationId": "post_audit_audit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuditRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/compliance": {
+      "get": {
+        "summary": "Get SBOM & Compliance Checklists",
+        "description": "Generates the Software Bill of Materials (SBOM) and runs OWASP API compliance checks.",
+        "operationId": "get_compliance_compliance_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/github/pr": {
+      "post": {
+        "summary": "Automate Local Git Commit & Simulate GitHub PR",
+        "description": "Executes subprocess scripts to create branches, commit code, and simulate/create pull requests on GitHub.",
+        "operationId": "post_github_pr_github_pr_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PRRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuditRequest": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "title": "Session Id",
+            "default": "session_uuid_7721"
+          }
+        },
+        "type": "object",
+        "title": "AuditRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PRRequest": {
+        "properties": {
+          "owner": {
+            "type": "string",
+            "title": "Owner",
+            "default": "YeshwanthS"
+          },
+          "repo": {
+            "type": "string",
+            "title": "Repo",
+            "default": "rocm-navigator-demo"
+          },
+          "head_branch": {
+            "type": "string",
+            "title": "Head Branch",
+            "default": "migration/rocm-navigator-auto-pr"
+          },
+          "base_branch": {
+            "type": "string",
+            "title": "Base Branch",
+            "default": "develop"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": "feat(migration): autonomous CUDA-to-ROCm migration bundle"
+          },
+          "body": {
+            "type": "string",
+            "title": "Body",
+            "default": "This PR was generated autonomously by ROCm Navigator agents after validating code compilation and security safety benchmarks."
+          }
+        },
+        "type": "object",
+        "title": "PRRequest"
+      },
+      "RepoScanPayload": {
+        "properties": {
+          "directory_path": {
+            "type": "string",
+            "title": "Directory Path"
+          }
+        },
+        "type": "object",
+        "required": [
+          "directory_path"
+        ],
+        "title": "RepoScanPayload"
+      },
+      "ReportPayload": {
+        "properties": {
+          "repo_url": {
+            "type": "string",
+            "title": "Repo Url"
+          },
+          "scanner_stats": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Scanner Stats"
+          },
+          "compile_status": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Compile Status"
+          },
+          "profile_metrics": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Profile Metrics"
+          },
+          "security_audit": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Security Audit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "repo_url",
+          "scanner_stats",
+          "compile_status",
+          "profile_metrics",
+          "security_audit"
+        ],
+        "title": "ReportPayload"
+      },
+      "ScanRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "default": "main.hip"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "title": "ScanRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

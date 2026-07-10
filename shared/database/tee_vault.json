@@ -1,0 +1,5 @@
+{
+  "test_jwt_secret_vault": "gAAAAABqT1JWuvc13QCk3z0rSCsvjJ7ziIMd2lutHJXNXaixk5ttWlmtmDiACoNd_OREQIhmNFHhyV1KJ0own2ljp5VIc3E7IypRyv58MjJJmj1Ccq5fR-aVPzwwzntLVsyvF32i8y6t",
+  "overwrite_test_key": "gAAAAABqT1JWBGCozOHm-AqL4tGYOs9DuwylVemQsFwlR_6p0-EyKcVop6tRL2iQhE-ZSqbDSoEUxU6UGMc_RQf7m2CuIKwhQw==",
+  "persistence_test_key": "gAAAAABqT1LKieqiINdjU8umM0sRDwYq8-1BmrtlDx2ib4Pk81Qtl15swxNaoKuYfnrzXITHZSRTjqI__fSPYMi5zGfqgRMJnabx_YuxtnbvI3ASia3wLOo="
+}

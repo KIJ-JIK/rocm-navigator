@@ -1,0 +1,46 @@
+[
+  {
+    "timestamp": "2026-07-09T14:33:46.031374Z",
+    "file_path": "test.cu",
+    "confidence": 0.0,
+    "token_types": [
+      "cuda_api_call"
+    ],
+    "difficulty_score": 50,
+    "source_snippet": "cudaMalloc(&d_a, size);\n",
+    "translated_snippet": "hipMalloc(&d_a, size);\n"
+  },
+  {
+    "timestamp": "2026-07-09T14:33:46.068546Z",
+    "file_path": "test.cu",
+    "confidence": 0.0,
+    "token_types": [
+      "cuda_api_call"
+    ],
+    "difficulty_score": 80,
+    "source_snippet": "cudaMalloc(&d_a, size);\n",
+    "translated_snippet": "// Fixed compiler errors: error: no instance of overloaded function 'hipMalloc' matches the argument list\nhipMalloc(&d_a, size);\n"
+  },
+  {
+    "timestamp": "2026-07-09T14:35:43.397566Z",
+    "file_path": "test.cu",
+    "confidence": 0.0,
+    "token_types": [
+      "cuda_api_call"
+    ],
+    "difficulty_score": 50,
+    "source_snippet": "cudaMalloc(&d_a, size);\n",
+    "translated_snippet": "hipMalloc(&d_a, size);\n"
+  },
+  {
+    "timestamp": "2026-07-09T14:35:43.448027Z",
+    "file_path": "test.cu",
+    "confidence": 0.0,
+    "token_types": [
+      "cuda_api_call"
+    ],
+    "difficulty_score": 80,
+    "source_snippet": "cudaMalloc(&d_a, size);\n",
+    "translated_snippet": "// Fixed compiler errors: error: no instance of overloaded function 'hipMalloc' matches the argument list\nhipMalloc(&d_a, size);\n"
+  }
+]

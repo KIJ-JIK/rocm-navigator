@@ -1,0 +1,649 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Anton+SC&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+
+/* CSS Variable Override */
+:root {
+  --font-sans: "Space Mono", monospace;
+  --font-serif: "Space Mono", monospace;
+  --font-mono: "Space Mono", monospace;
+}
+
+.synapse-body-wrapper {
+  background-color: #090b16; /* Midnight Indigo base */
+  color: #F0E7D5; /* Vanilla Cream text */
+  font-family: "Space Mono", monospace;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Global resets for the landing experience */
+.synapse-body-wrapper * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Sections - all transparent to let the paper texture flow through */
+.synapse-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: transparent !important;
+}
+
+.h-screen-dvh {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Navbar */
+.synapse-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+}
+
+@media (min-width: 640px) {
+  .synapse-navbar {
+    padding: 0 32px;
+  }
+}
+
+.synapse-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Logo Pill */
+.synapse-logo-pill {
+  height: 48px;
+  padding: 0 20px;
+  background-color: #090b16; /* Midnight Indigo */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(240, 231, 213, 0.15);
+  cursor: pointer;
+  text-decoration: none;
+  color: #F0E7D5; /* Vanilla Cream text */
+}
+
+/* Menu Capsule */
+.synapse-menu-capsule {
+  height: 48px;
+  background-color: #090b16; /* Midnight Indigo */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(240, 231, 213, 0.15);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Squash Hamburger Button */
+.synapse-hamburger-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Download/Launch App Button */
+.synapse-download-btn {
+  height: 48px;
+  padding: 0 24px;
+  background-color: #312e81; /* Primary Crimson Red */
+  color: #F0E7D5; /* Vanilla Cream text */
+  border-radius: 9999px;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.synapse-download-btn:hover {
+  background-color: #a01f1f; /* Primary hover red */
+}
+
+/* Responsive scale-down for mobile */
+@media (max-width: 639px) {
+  .synapse-navbar {
+    height: 64px;
+  }
+  .synapse-logo-pill {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    gap: 8px;
+  }
+  .synapse-menu-capsule {
+    height: 36px;
+    border-radius: 10px;
+  }
+  .synapse-download-btn {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 12px;
+  }
+}
+
+/* Dot Grid Overlay - white dots on dark backgrounds */
+.synapse-dot-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(240, 231, 213, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Watermark Text - red themed watermark with low opacity */
+.synapse-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  font-family: 'Anton SC', sans-serif;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.12;
+  white-space: nowrap;
+  
+  /* Crimson red watermark gradient */
+  background: radial-gradient(circle, rgba(135, 23, 23, 0) 0%, #312e81 75%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 3D Perspective container */
+.synapse-perspective-container {
+  perspective: 400px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.synapse-perspective-text {
+  transform-style: preserve-3d;
+  font-family: "Space Mono", monospace;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  color: #F0E7D5; /* Vanilla Cream text */
+  text-align: center;
+}
+
+/* Word reveal overrides */
+.reveal-word-inner {
+  color: #F0E7D5 !important; /* Vanilla Cream text for contrast */
+}
+
+/* Card overrides for Section 5 */
+.synapse-section .border-white\/10 {
+  border-color: rgba(240, 231, 213, 0.15) !important;
+}
+.synapse-section .bg-zinc-950\/20 {
+  background-color: rgba(9, 11, 22, 0.4) !important;
+}
+
+/* Typography elements default to Vanilla Cream for dark theme */
+.synapse-section h1,
+.synapse-section h2,
+.synapse-section h3,
+.synapse-section span,
+.synapse-section p {
+  color: #F0E7D5;
+}
+
+/* Lenis smooth scrolling compatibility */
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* WINE-RED GLASSMORPHIC DESIGN OVERRIDES */
+
+.indigo-dashboard-root {
+  background: radial-gradient(circle at 10% 15%, #090b16 0%, #0b0d19 50%, #080102 100%) !important;
+  color: #F0E7D5 !important;
+  font-family: "Cormorant Garamond", serif !important;
+  --font-sans: "Cormorant Garamond", serif;
+}
+
+.cormorant-garamond-regular {
+  font-family: "Cormorant Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.indigo-sidebar {
+  background-color: rgba(18, 22, 43, 0.45) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-right: 1px solid rgba(99, 102, 241, 0.12) !important;
+}
+
+.indigo-glass-card {
+  background-color: rgba(18, 22, 43, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.14) !important;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 1.5rem !important;
+}
+
+.indigo-glass-card-hover {
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.indigo-glass-card-hover:hover {
+  background-color: rgba(69, 21, 28, 0.5) !important;
+  border-color: rgba(99, 102, 241, 0.25) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.05) !important;
+}
+
+/* Sidebar Menu Button Custom Styling */
+.indigo-sidebar-btn-active {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+  color: #6366f1 !important;
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+
+.indigo-sidebar-btn {
+  border-radius: 9999px !important;
+  transition: all 0.2s ease;
+}
+
+.indigo-sidebar-btn:hover {
+  background-color: rgba(99, 102, 241, 0.08) !important;
+  color: #F0E7D5 !important;
+}
+
+/* Circular Aura Performance Visualization styling */
+.indigo-aura-wrapper {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.wine-glow-circle-1 {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 190, 79, 0.35) 0%, rgba(245, 190, 79, 0) 70%);
+  filter: blur(16px);
+  animation: float1 7s infinite alternate ease-in-out;
+  z-index: 1;
+}
+
+.wine-glow-circle-2 {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(99, 102, 241, 0) 70%);
+  filter: blur(20px);
+  animation: float2 9s infinite alternate ease-in-out;
+  z-index: 1;
+}
+
+.wine-glow-circle-3 {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(56, 189, 248, 0) 70%);
+  filter: blur(14px);
+  animation: float3 6s infinite alternate ease-in-out;
+  z-index: 1;
+}
+
+@keyframes float1 {
+  0% { transform: translate(-8px, -12px) scale(0.9); }
+  100% { transform: translate(12px, 8px) scale(1.15); }
+}
+
+@keyframes float2 {
+  0% { transform: translate(12px, 12px) scale(1.1); }
+  100% { transform: translate(-12px, -8px) scale(0.85); }
+}
+
+@keyframes float3 {
+  0% { transform: translate(-12px, 8px) scale(1.05); }
+  100% { transform: translate(8px, -12px) scale(0.95); }
+}
+
+.indigo-aura-text-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-col: column;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background-color: rgba(18, 22, 43, 0.8);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+/* Glassmorphic console log list element styling */
+.indigo-console-panel {
+  background-color: rgba(18, 4, 6, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.08) !important;
+}
+
+/* Scrollbar styling for a premium aesthetic */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* REFERENCE DESIGN ALIGNED LAYOUT CLASSES */
+
+.floating-capsule-sidebar {
+  width: 72px !important;
+  height: calc(100vh - 2.5rem) !important;
+  margin: 1.25rem 0.75rem 1.25rem 1.25rem !important;
+  background-color: rgba(18, 22, 43, 0.65) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  border-radius: 2.25rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 1.5rem 0 !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  z-index: 40 !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.floating-capsule-sidebar-expanded {
+  width: 220px !important;
+  align-items: flex-start !important;
+  padding: 1.5rem 1.1rem !important;
+  border-radius: 1.75rem !important;
+}
+
+.floating-sidebar-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8fa0dd;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  outline: none;
+}
+
+.floating-sidebar-icon-btn:hover {
+  color: #F0E7D5;
+  background-color: rgba(99, 102, 241, 0.08);
+}
+
+.floating-sidebar-icon-btn-active {
+  color: #ffffff !important;
+  background-color: #4f46e5 !important; /* Blue color */
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.45) !important;
+  transform: scale(1.05);
+}
+
+.floating-sidebar-icon-btn-expanded {
+  width: 100% !important;
+  border-radius: 0.75rem !important;
+  justify-content: flex-start !important;
+  padding: 0 0.75rem !important;
+  gap: 0.75rem !important;
+}
+
+.floating-avatar-capsule {
+  width: 48px;
+  height: 90px;
+  border-radius: 1.5rem;
+  background-color: rgba(9, 11, 22, 0.85);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.floating-avatar-capsule-expanded {
+  width: 100% !important;
+  height: 48px !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  padding: 0 0.5rem !important;
+  border-radius: 0.75rem !important;
+}
+
+/* Overlapping fuzzy circles card elements */
+.fuzzy-circles-wrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: visible;
+}
+
+/* Fuzzy overlapping circles container */
+.fuzzy-circles-wrapper {
+  position: relative;
+  width: 360px;
+  height: 140px;
+}
+
+.fuzzy-circle {
+  position: absolute;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.4s ease;
+}
+
+.fuzzy-circle-yellow {
+  background: radial-gradient(circle, rgba(204, 65, 85, 0.75) 0%, rgba(204, 65, 85, 0.25) 80%);
+  width: 150px;
+  height: 150px;
+  left: 38%;
+  top: -10px;
+  border: 1px solid rgba(204, 65, 85, 0.45);
+  box-shadow: 0 0 40px rgba(204, 65, 85, 0.3), inset 0 0 20px rgba(204, 65, 85, 0.15);
+  backdrop-filter: blur(2px);
+}
+
+.fuzzy-circle-red {
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.75) 0%, rgba(79, 70, 229, 0.2) 80%);
+  width: 110px;
+  height: 110px;
+  left: 16%;
+  top: 15px;
+  border: 1px solid rgba(99, 102, 241, 0.45);
+  box-shadow: 0 0 35px rgba(79, 70, 229, 0.35), inset 0 0 15px rgba(79, 70, 229, 0.1);
+  backdrop-filter: blur(2px);
+}
+
+.fuzzy-circle-black {
+  background: rgba(9, 11, 22, 0.9);
+  width: 80px;
+  height: 80px;
+  left: 5%;
+  top: 5px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  z-index: 10;
+}
+
+/* Calendar Date highlights from Image 1 */
+.calendar-circle-highlight {
+  background-color: #f5be4f !important;
+  color: #090b16 !important;
+  font-weight: bold !important;
+  box-shadow: 0 2px 10px rgba(245, 190, 79, 0.5) !important;
+}
+
+.calendar-circle-scheduled {
+  border: 1px solid rgba(99, 102, 241, 0.5) !important;
+  background-color: rgba(99, 102, 241, 0.08) !important;
+  color: #F0E7D5 !important;
+}
+
+/* Horizontal Progress Slider styling from Image 1 */
+.slider-container-box {
+  width: 100%;
+  position: relative;
+  padding: 1.5rem 0 0.5rem 0;
+}
+
+.slider-scale-line {
+  height: 16px;
+  border-radius: 9999px;
+  background-color: rgba(9, 11, 22, 0.8);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.slider-scale-fill {
+  height: 100%;
+  background: linear-gradient(to right, #312e81, #4f46e5);
+  border-radius: 9999px;
+}
+
+.slider-scale-badge {
+  position: absolute;
+  top: -12px;
+  background-color: rgba(245, 190, 79, 0.95);
+  color: #090b16;
+  font-family: monospace;
+  font-size: 8px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.slider-scale-dots {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.slider-scale-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Habit Status Indicator Squares from Image 1 */
+.habit-grid-dots {
+  display: flex;
+  gap: 2.5px;
+}
+
+.habit-dot-square {
+  width: 5px;
+  height: 10px;
+  border-radius: 1px;
+}
+
+/* Custom Overlapping Avatar bubbles */
+.avatar-group-stack {
+  display: flex;
+  align-items: center;
+  direction: rtl;
+}
+
+.avatar-stack-item {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #090b16;
+  margin-left: -6px;
+  object-fit: cover;
+}
+
+/* macOS Window Traffic Lights Decoration */
+.mac-traffic-lights {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.mac-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.mac-dot-close { background-color: #3b82f6; }
+.mac-dot-minimize { background-color: #ffbd2e; }
+.mac-dot-maximize { background-color: #27c93f; }
+
+

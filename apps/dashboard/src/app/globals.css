@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #090b16; /* Midnight Indigo base background */
+  --foreground: #F0E7D5; /* Vanilla Cream text foreground */
+  --card: #12162b; /* Deep Indigo panel background */
+  --card-border: rgba(240, 231, 213, 0.12); /* Vanilla Cream border */
+  --border: rgba(240, 231, 213, 0.08);
+  
+  --primary: #4f46e5; /* Primary Indigo */
+  --primary-glow: rgba(79, 70, 229, 0.2);
+  --accent: #312e81; /* Accent Deep Indigo */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+@theme {
+  --color-zinc-950: #090b16; /* Midnight Indigo background */
+  --color-zinc-900: #12162b; /* Midnight Indigo cards/sidebars */
+  --color-zinc-800: #1c2242; /* Midnight Indigo borders */
+  --color-zinc-700: #29315d;
+  --color-zinc-500: #6571a8;
+  --color-zinc-400: #9ba8dc;
+  --color-zinc-300: #c9d2f2;
+  --color-zinc-100: #F0E7D5; /* Vanilla Cream text */
+  
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 4px rgba(79, 70, 229, 0.1);
+  }
+  to {
+    box-shadow: 0 0 12px rgba(79, 70, 229, 0.4);
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism card utility */
+.glass-panel {
+  background: rgba(18, 22, 43, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+}
+
+.glass-panel-glow {
+  background: rgba(18, 22, 43, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(135, 23, 23, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

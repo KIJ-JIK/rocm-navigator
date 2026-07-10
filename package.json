@@ -1,0 +1,14 @@
+{
+  "name": "rocm-navigator",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace=apps/dashboard",
+    "build:frontend": "npm run build --workspace=apps/dashboard",
+    "start:frontend": "npm run start --workspace=apps/dashboard"
+  }
+}

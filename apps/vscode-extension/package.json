@@ -1,0 +1,46 @@
+{
+  "name": "rocm-navigator",
+  "displayName": "ROCm Navigator Code Porter",
+  "description": "Multi-agent autonomous CUDA-to-ROCm migration assistant inside VS Code.",
+  "version": "1.0.0",
+  "publisher": "ansh",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:rocm-navigator.portFile"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "rocm-navigator.portFile",
+        "title": "ROCm Navigator: Port active CUDA file to AMD HIP"
+      }
+    ],
+    "configuration": {
+      "title": "ROCm Navigator Configurations",
+      "properties": {
+        "rocm-navigator.gatewayUrl": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "FastAPI Orchestration Gateway base URL."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^4.9.5"
+  }
+}
