@@ -384,8 +384,8 @@ export default function Dashboard() {
       </div>
     );
   };
-  const [username, setUsername] = useState("ansh");
-  const [password, setPassword] = useState("rocm_nav_pass");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [authError, setAuthError] = useState("");
   const [jwtToken, setJwtToken] = useState("");
@@ -756,55 +756,46 @@ export default function Dashboard() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
-    const url = isSignUp 
-      ? "http://localhost:8000/api/v1/auth/register" 
-      : "http://localhost:8000/api/v1/auth/session-handshake";
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.detail || "Authentication handshake failed");
+
+    // Validate inputs
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(username)) {
+      setAuthError("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 4) {
+      setAuthError("Password must be at least 4 characters.");
+      return;
+    }
+
+    // Use localStorage for user storage
+    const storedUsersRaw = localStorage.getItem("rocm_users");
+    const storedUsers: Record<string, string> = storedUsersRaw ? JSON.parse(storedUsersRaw) : {};
+
+    if (isSignUp) {
+      // Registration
+      if (storedUsers[username]) {
+        setAuthError("An account with this email already exists. Please sign in.");
+        return;
       }
-      if (data.access_token) {
-        setJwtToken(data.access_token);
-        setAuthState("landing");
-      } else {
-        if (isSignUp) {
-          setLogMessages(prev => [...prev, `[Security] Workspace registered successfully. Logging in...`]);
-          // Automatically log in after registration
-          setIsSignUp(false);
-          // Try logging in
-          const loginRes = await fetch("http://localhost:8000/api/v1/auth/session-handshake", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
-          });
-          const loginData = await loginRes.json();
-          if (loginData.access_token) {
-            setJwtToken(loginData.access_token);
-            setAuthState("landing");
-          } else {
-            setJwtToken("offline_session_jwt_token");
-            setAuthState("landing");
-          }
-        } else {
-          setJwtToken("offline_session_jwt_token");
-          setAuthState("landing");
-        }
+      storedUsers[username] = password;
+      localStorage.setItem("rocm_users", JSON.stringify(storedUsers));
+      setLogMessages(prev => [...prev, `[Security] Account registered successfully for ${username}. Logging in...`]);
+      setJwtToken("session_" + btoa(username));
+      setAuthState("landing");
+    } else {
+      // Sign in
+      if (!storedUsers[username]) {
+        setAuthError("No account found with this email. Please register first.");
+        return;
       }
-    } catch (err: any) {
-      if (isSignUp) {
-        setAuthError(err.message || "Registration failed");
-      } else {
-        // Fallback for simulation/offline mode
-        console.warn("Auth endpoint unreachable. Using offline session fallback.", err);
-        setJwtToken("offline_session_jwt_token");
-        setAuthState("landing");
+      if (storedUsers[username] !== password) {
+        setAuthError("Incorrect password. Please try again.");
+        return;
       }
+      setLogMessages(prev => [...prev, `[Security] Authenticated successfully as ${username}.`]);
+      setJwtToken("session_" + btoa(username));
+      setAuthState("landing");
     }
   };
 
@@ -1399,63 +1390,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="mt-7 grid grid-cols-2 gap-2.5">
-            <button
-              type="button"
-              onClick={() => {
-                console.log("GitHub OAuth initiated");
-                setJwtToken("offline_session_jwt_token");
-                setAuthState("landing");
-              }}
-              className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-white/15 bg-white/[0.08] px-3 text-sm text-white transition-colors hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-            >
-              <span className="size-4 shrink-0 [&_svg]:size-4">
-                <svg viewBox="0 0 24 24" aria-hidden fill="currentColor" className="w-4 h-4">
-                  <path d="M12 .5C5.7.5.6 5.6.6 11.9c0 5 3.3 9.3 7.8 10.8.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.5-.3-5.2-1.3-5.2-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2 1-.3 2-.4 3-.4s2 .1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.2 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.5-1.5 7.8-5.8 7.8-10.8C23.4 5.6 18.3.5 12 .5Z" />
-                </svg>
-              </span>
-              <span className="truncate whitespace-nowrap">GitHub</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                console.log("Google OAuth initiated");
-                setJwtToken("offline_session_jwt_token");
-                setAuthState("landing");
-              }}
-              className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-white/15 bg-white/[0.08] px-3 text-sm text-white transition-colors hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-            >
-              <span className="size-4 shrink-0 [&_svg]:size-4">
-                <svg viewBox="0 0 24 24" aria-hidden className="w-4 h-4">
-                  <path
-                    fill="#EA4335"
-                    d="M12 5c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.5 15 .5 12 .5 7.3.5 3.3 3.2 1.4 7.1l3.8 3c.9-2.8 3.5-4.6 6.8-4.6Z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5c-.3 1.5-1.1 2.7-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.6Z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.2 14.1c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1l-3.8-3C.5 8.7 0 10.3 0 12s.5 3.3 1.4 4.7l3.8-2.6Z"
-                  />
-                  <path
-                    fill="#4285F4"
-                    d="M12 23.5c3.2 0 5.9-1.1 7.9-2.9l-3.7-2.9c-1 .7-2.4 1.2-4.2 1.2-3.3 0-6-2-6.9-4.6l-3.8 3C3.3 20.8 7.3 23.5 12 23.5Z"
-                  />
-                </svg>
-              </span>
-              <span className="truncate whitespace-nowrap">Google</span>
-            </button>
-          </div>
 
-          <div className="my-6 flex items-center gap-3">
-            <Separator className="flex-1 bg-white/15" />
-            <span className="font-mono text-[10px] text-white/55 uppercase tracking-[0.3em]">
-              Or
-            </span>
-            <Separator className="flex-1 bg-white/15" />
-          </div>
 
           {authError && (
             <div className="mb-4 text-[11px] text-red-400 font-mono bg-red-950/20 border border-red-900/40 p-3 rounded-lg">
@@ -1466,15 +1401,15 @@ export default function Dashboard() {
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <Field>
               <FieldLabel htmlFor="glass-signup-email" className="text-white/85">
-                Developer Workspace ID
+                Email
                 <span className="text-white/45">*</span>
               </FieldLabel>
               <Input
                 id="glass-signup-email"
-                type="text"
+                type="email"
                 required
-                placeholder="Enter username..."
-                autoComplete="username"
+                placeholder="Enter email address..."
+                autoComplete="email"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 nativeInput
@@ -1484,7 +1419,7 @@ export default function Dashboard() {
 
             <Field>
               <FieldLabel htmlFor="glass-signup-password" className="text-white/85">
-                Cryptographic Passphrase
+                Password
                 <span className="text-white/45">*</span>
               </FieldLabel>
               <InputGroup className="border-white/15 bg-white/[0.06] text-white hover:bg-white/[0.08] focus-within:border-white/30">
