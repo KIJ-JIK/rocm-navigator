@@ -1475,7 +1475,7 @@ export default function Dashboard() {
         </section>
 
         {/* FOOTER */}
-        <footer className="w-full overflow-hidden border-t border-white/5 relative">
+        <footer className="w-full overflow-hidden border-t border-white/5 relative bg-[#090b16]">
           {/* Paper Texture with Red Spider Lilies */}
           <div className="absolute inset-0 z-0 flex items-center justify-center opacity-85">
             <PaperTexture
