@@ -62,7 +62,24 @@ def shutdown_all(signum=None, frame=None):
     print(f"{Colors.BOLD}{Colors.HEADER}[SYSTEM] All systems offline. Goodbye!{Colors.ENDC}")
     sys.exit(0)
 
+def load_env():
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.exists(env_path):
+        print("[SYSTEM] Loading credentials and config from .env...")
+        with open(env_path, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip('"').strip("'")
+                    if key:
+                        os.environ[key] = val
+
 def main():
+    load_env()
     # Hook exit signals
     signal.signal(signal.SIGINT, shutdown_all)
     signal.signal(signal.SIGTERM, shutdown_all)

@@ -84,6 +84,7 @@ class CudaParser:
         return {
             "file": filepath,
             "lines_count": len(lines),
+            "source_code": code,
             "kernels": kernels,
             "launches": launches,
             "memory_calls": memory_calls,

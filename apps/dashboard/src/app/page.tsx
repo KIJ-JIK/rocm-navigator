@@ -486,8 +486,8 @@ export default function Dashboard() {
       >
         {/* Top Logo - AMD/ROCm themed emblem */}
         <div className={`flex ${sidebarExpanded ? "flex-row items-center gap-3 px-1" : "flex-col items-center gap-1"}`}>
-          <div className="size-11 rounded-full bg-gradient-to-tr from-[#312e81] to-[#4f46e5] flex items-center justify-center border border-[#6366f1]/30 shadow-md shadow-[#312e81]/40 cursor-pointer flex-shrink-0" onClick={() => setAuthState("landing")}>
-            <TrendingUp className="h-5 w-5 text-[#cc4155]" />
+          <div className="size-11 rounded-full overflow-hidden flex items-center justify-center border border-[#6366f1]/30 shadow-md shadow-[#312e81]/40 cursor-pointer flex-shrink-0" onClick={() => setAuthState("landing")}>
+            <img src="/rocm_logo.png" alt="ROCm Navigator Logo" className="w-full h-full object-cover object-left" />
           </div>
           {sidebarExpanded ? (
             <div className="flex flex-col text-left">
@@ -975,7 +975,12 @@ export default function Dashboard() {
           animate={{ opacity: entranceComplete ? 1 : 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="synapse-nav-left">
+          <div className="synapse-nav-left flex items-center gap-3">
+            {/* Logo Pill */}
+            <div className="synapse-logo-pill" onClick={() => setAuthState("landing")}>
+              <img src="/rocm_logo.png" alt="ROCm Navigator Logo" className="h-7 w-auto object-contain" />
+            </div>
+
             {/* Expanding menu capsule */}
             <motion.div 
               className="synapse-menu-capsule"
@@ -1364,7 +1369,9 @@ export default function Dashboard() {
           <div className="flex flex-col items-center justify-center min-h-[450px] w-full text-center px-6 relative z-10 py-16">
             <div className="flex flex-col items-center max-w-3xl">
               <div className="flex items-center gap-3 mb-8 bg-zinc-950/40 px-5 py-2 rounded-full border border-white/5 backdrop-blur-sm">
-                <SynapseXLogo />
+                <div className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0">
+                  <img src="/rocm_logo.png" alt="ROCm Navigator" className="w-full h-full object-cover object-left scale-110" />
+                </div>
                 <span className="font-medium text-sm tracking-[0.15em] uppercase text-white/85 font-mono">ROCm Navigator</span>
               </div>
               <h2 className="text-white font-light text-[clamp(22px,4vw,36px)] leading-[1.3] tracking-tight max-w-2xl mb-4 font-sans">
@@ -1411,7 +1418,7 @@ export default function Dashboard() {
         </div>
         <div className="relative z-10 w-full max-w-md rounded-2xl border border-white/15 bg-white/[0.06] p-8 shadow-2xl backdrop-blur-xl backdrop-saturate-150">
           <div className="flex justify-center">
-            <BrandMark />
+            <img src="/rocm_logo.png" alt="ROCm Navigator Logo" className="h-10 w-auto object-contain" />
           </div>
           <div className="mt-7 flex flex-col items-center text-center">
             <Shuffle

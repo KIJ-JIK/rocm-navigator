@@ -503,20 +503,33 @@ async def session_handshake(payload: AuthPayload):
 async def initialize_migration_pipeline(payload: MigrationPayload, current_user: str = Depends(get_current_user)):
     session_id = f"nav_uuid_{uuid.uuid4().hex[:8]}"
 
+    repo_url = payload.repository_url
+    target_file = None
+    if "github.com" in repo_url:
+        import urllib.parse
+        for marker in ["/blob/", "/tree/"]:
+            if marker in repo_url:
+                parts = repo_url.split(marker, 1)
+                repo_url = parts[0] + ".git"
+                subparts = parts[1].split("/", 1)
+                if len(subparts) > 1:
+                    target_file = urllib.parse.unquote(subparts[1])
+                break
+
     # --- Option A: Clone repository to a temp directory on disk ---
     cloned_dir: Optional[str] = None
     clone_error: Optional[str] = None
 
-    if GIT_AVAILABLE and payload.repository_url.startswith(("http", "git@")):
+    if GIT_AVAILABLE and repo_url.startswith(("http", "git@")):
         try:
             tmp = tempfile.mkdtemp(prefix=f"rocm_{session_id}_")
-            logger.info(f"Cloning {payload.repository_url} into {tmp}")
-            git.Repo.clone_from(payload.repository_url, tmp, depth=1)
+            logger.info(f"Cloning {repo_url} into {tmp}")
+            git.Repo.clone_from(repo_url, tmp, depth=1)
             cloned_dir = tmp
             logger.info(f"Clone complete: {cloned_dir}")
         except Exception as e:
             clone_error = str(e)
-            logger.warning(f"Git clone failed for {payload.repository_url}: {clone_error}")
+            logger.warning(f"Git clone failed for {repo_url}: {clone_error}")
             if cloned_dir:
                 shutil.rmtree(cloned_dir, ignore_errors=True)
             cloned_dir = None
@@ -533,6 +546,7 @@ async def initialize_migration_pipeline(payload: MigrationPayload, current_user:
         "target_hardware": payload.target_hardware,
         "cloned_dir": cloned_dir,           # disk path or None
         "clone_error": clone_error,          # error message or None
+        "target_file": target_file,          # target specific file or None
         "status": "INITIALIZED",
         "confidence": 1.0,
         "current_active_agent": "Scanner Agent",
@@ -596,6 +610,7 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
     # --- Retrieve session context (cloned dir or fallback) ---
     session = active_sessions.get(session_id, {})
     cloned_dir = session.get("cloned_dir")  # real disk path if clone succeeded, else None
+    target_file = session.get("target_file") # specific target file to prioritize if set, else None
 
     # Fallback sample used only when no repo was cloned
     SAMPLE_CUDA = """
@@ -687,9 +702,14 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
                 all_file_results = dir_response.get("results", [])
                 files_scanned = dir_response.get("files_scanned", len(all_file_results))
                 # Use first file result for downstream single-file agents; aggregate for graph
-                scanner_results = all_file_results[0] if all_file_results else {
-                    "file": "(empty repo)", "lines_count": 0, "kernels": [], "memory_calls": []
-                }
+                scanner_results = None
+                if target_file:
+                    normalized_target = target_file.replace("\\", "/")
+                    scanner_results = next((f for f in all_file_results if f.get("file").replace("\\", "/") == normalized_target or f.get("file").replace("\\", "/").endswith("/" + normalized_target)), None)
+                if not scanner_results:
+                    scanner_results = all_file_results[0] if all_file_results else {
+                        "file": "(empty repo)", "lines_count": 0, "kernels": [], "memory_calls": []
+                    }
                 total_kernels = sum(len(f.get("kernels", [])) for f in all_file_results)
                 total_mem = sum(len(f.get("memory_calls", [])) for f in all_file_results)
                 log = (f"Cloned repo scanned: {files_scanned} file(s). "
@@ -725,7 +745,12 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
             try:
                 logger.info("Topologically sorting files based on call topology dependencies...")
                 all_file_results = sort_files_topologically(all_file_results, graph_analysis["call_topology"])
-                scanner_results = all_file_results[0]
+                scanner_results = None
+                if target_file:
+                    normalized_target = target_file.replace("\\", "/")
+                    scanner_results = next((f for f in all_file_results if f.get("file").replace("\\", "/") == normalized_target or f.get("file").replace("\\", "/").endswith("/" + normalized_target)), None)
+                if not scanner_results:
+                    scanner_results = all_file_results[0]
                 logger.info(f"Topologically sorted files. Primary file set to: {scanner_results.get('file')}")
             except Exception as sort_err:
                 logger.warning(f"Failed to topologically sort files: {str(sort_err)}")
