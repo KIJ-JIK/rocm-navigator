@@ -1475,7 +1475,7 @@ export default function Dashboard() {
         </section>
 
         {/* FOOTER */}
-        <footer className="w-full overflow-hidden border-t border-white/5 relative bg-[#090b16]">
+        <footer className="w-full min-h-screen overflow-hidden border-t border-white/5 relative bg-[#090b16] flex flex-col justify-center">
           {/* Paper Texture with Red Spider Lilies */}
           <div className="absolute inset-0 z-0 flex items-center justify-center opacity-85">
             <PaperTexture
@@ -1500,7 +1500,7 @@ export default function Dashboard() {
             />
           </div>
           {/* Centered Footer Content with Larger Font */}
-          <div className="flex flex-col items-center justify-center min-h-[450px] w-full text-center px-6 relative z-10 py-16">
+          <div className="flex-1 flex flex-col items-center justify-center w-full text-center px-6 relative z-10 py-16">
             <div className="flex flex-col items-center max-w-3xl">
               <div className="flex items-center gap-3 mb-8 bg-zinc-950/40 px-5 py-2 rounded-full border border-white/5 backdrop-blur-sm">
                 <div className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0">
