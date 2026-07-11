@@ -1811,7 +1811,10 @@ export default function Dashboard() {
                     {metrics.compilation_success_percentage}% OK
                   </span>
                   <button 
-                    onClick={() => setAuthState("editor")}
+                    onClick={() => {
+                      setAuthState("editor");
+                      setSettingsOpen(true);
+                    }}
                     className="mt-2 px-3 py-1.5 rounded bg-[#4f46e5] hover:bg-[#6366f1] text-xs font-bold text-white cursor-pointer transition-all border-none outline-none"
                   >
                     Change Target
@@ -1861,7 +1864,10 @@ export default function Dashboard() {
             <div className="lg:col-span-4 p-6 indigo-glass-card flex flex-col justify-between min-h-[220px]">
               <div className="flex justify-between items-center border-b border-[#1c2242]/20 pb-2 mb-3">
                 <span className="text-xs font-bold text-[#F0E7D5] uppercase tracking-wider">Active Pipeline Nodes</span>
-                <span className="text-xs text-[#4f46e5] font-bold cursor-pointer hover:underline" onClick={() => setAuthState("editor")}>Add Node +</span>
+                <span className="text-xs text-[#4f46e5] font-bold cursor-pointer hover:underline" onClick={() => {
+                  setAuthState("editor");
+                  setSettingsOpen(true);
+                }}>Add Node +</span>
               </div>
 
               <div className="space-y-2.5 overflow-y-auto pr-1 scrollbar-none flex-1">
@@ -1924,7 +1930,10 @@ export default function Dashboard() {
           {/* Main workspace action buttons footer */}
           <footer className="mt-8 flex justify-center gap-4 z-10">
             <button 
-              onClick={() => setAuthState("editor")}
+              onClick={() => {
+                setAuthState("editor");
+                setSettingsOpen(true);
+              }}
               className="px-6 py-2.5 rounded-full bg-[#cc4155] hover:bg-[#e35b6e] text-white text-sm font-bold shadow-md shadow-[#cc4155]/20 cursor-pointer border-none outline-none"
             >
               Configure AI Pipelines
