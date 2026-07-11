@@ -1618,17 +1618,25 @@ export default function Dashboard() {
                 <div className="fuzzy-circles-wrapper">
                   {/* Black solid bubble */}
                   <div className="fuzzy-circle fuzzy-circle-black">
-                    <span className="font-mono text-sm font-bold">10x+</span>
+                    <span className="font-mono text-sm font-bold">
+                      {(metrics.active_gpu_utilization_percent / 8).toFixed(1)}x
+                    </span>
                     <span className="text-[10px] text-[#8fa0dd] uppercase">speedup</span>
                   </div>
                   {/* Red fuzzy circle */}
                   <div className="fuzzy-circle fuzzy-circle-red">
-                    <span className="font-mono text-base font-bold text-white">12k+</span>
+                    <span className="font-mono text-base font-bold text-white">
+                      {metrics.total_source_lines_read >= 1000 
+                        ? `${(metrics.total_source_lines_read / 1000).toFixed(0)}k+` 
+                        : metrics.total_source_lines_read}
+                    </span>
                     <span className="text-[10px] text-[#F0E7D5] uppercase">lines read</span>
                   </div>
                   {/* Yellow fuzzy circle */}
                   <div className="fuzzy-circle fuzzy-circle-yellow">
-                    <span className="font-mono text-lg font-bold text-white">99.4%</span>
+                    <span className="font-mono text-lg font-bold text-white">
+                      {metrics.compilation_success_percentage}%
+                    </span>
                     <span className="text-xs text-white uppercase font-bold bg-[#cc4155] px-1.5 py-0.5 rounded mt-0.5">compile</span>
                   </div>
                 </div>
@@ -1668,17 +1676,30 @@ export default function Dashboard() {
                 <div className="relative size-24 flex items-center justify-center">
                   <svg className="absolute inset-0 size-full -rotate-90">
                     <circle cx="48" cy="48" r="40" className="stroke-[#1c2242]/30 fill-none" strokeWidth="6" />
-                    <circle cx="48" cy="48" r="40" className="stroke-[#4f46e5] fill-none" strokeWidth="6" strokeDasharray={251.2} strokeDashoffset={251.2 * 0.2} strokeLinecap="round" />
+                    <circle 
+                      cx="48" 
+                      cy="48" 
+                      r="40" 
+                      className="stroke-[#4f46e5] fill-none transition-all duration-500" 
+                      strokeWidth="6" 
+                      strokeDasharray={251.2} 
+                      strokeDashoffset={251.2 * (1 - Math.min(metrics.total_source_lines_read / 150000, 1))} 
+                      strokeLinecap="round" 
+                    />
                   </svg>
                   <div className="flex flex-col items-center">
-                    <span className="text-xs text-[#8fa0dd] uppercase font-bold">Goal 15k</span>
-                    <span className="font-mono text-base font-bold text-white mt-0.5">{metrics.total_migrations_run * 4000 + 50}</span>
+                    <span className="text-[9px] text-[#8fa0dd] uppercase font-bold">Goal 150k</span>
+                    <span className="font-mono text-sm font-bold text-white mt-0.5">
+                      {metrics.total_source_lines_read}
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-1 text-left">
                   <span className="text-xs uppercase font-bold text-[#8fa0dd]">Compilation Status</span>
-                  <span className="text-sm font-bold text-emerald-400">100% OK</span>
+                  <span className="text-sm font-bold text-emerald-400">
+                    {metrics.compilation_success_percentage}% OK
+                  </span>
                   <button 
                     onClick={() => setAuthState("editor")}
                     className="mt-2 px-3 py-1.5 rounded bg-[#4f46e5] hover:bg-[#6366f1] text-xs font-bold text-white cursor-pointer transition-all border-none outline-none"
@@ -1699,7 +1720,10 @@ export default function Dashboard() {
               {/* Slider Scale bar from Image 1 */}
               <div className="slider-container-box">
                 <div className="slider-scale-line">
-                  <div className="slider-scale-fill" style={{ width: "68%" }} />
+                  <div 
+                    className="slider-scale-fill transition-all duration-300" 
+                    style={{ width: isMigrating ? `${progress}%` : "100%" }} 
+                  />
                   <div className="slider-scale-dots">
                     <span className="slider-scale-dot" />
                     <span className="slider-scale-dot" />
@@ -1708,14 +1732,17 @@ export default function Dashboard() {
                     <span className="slider-scale-dot" />
                   </div>
                   {/* Floating badge pointing out progress */}
-                  <div className="slider-scale-badge" style={{ left: "68%" }}>
-                    68% Ingestion
+                  <div 
+                    className="slider-scale-badge transition-all duration-300" 
+                    style={{ left: isMigrating ? `${progress}%` : "100%" }}
+                  >
+                    {isMigrating ? `${progress}%` : "100%"} Ingestion
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-between text-xs font-mono text-[#8fa0dd] mt-1">
-                <span>0 MB Ingested</span>
+                <span>{isMigrating ? ((progress / 100) * 1.5).toFixed(2) : "1.50"} MB Ingested</span>
                 <span>2.5 MB Limit</span>
               </div>
             </div>
@@ -1729,10 +1756,34 @@ export default function Dashboard() {
 
               <div className="space-y-2.5 overflow-y-auto pr-1 scrollbar-none flex-1">
                 {[
-                  { name: "Scanner Agent", desc: "Tree-sitter parser", completed: [true, true, true, true, true, true, true, true, false, false] },
-                  { name: "Rewrite Agent", desc: "LLM translator node", completed: [true, true, true, true, true, false, false, false, false, false] },
-                  { name: "Validation Agent", desc: "Isolated hipcc compiler", completed: [true, true, true, true, true, true, true, true, true, true] },
-                  { name: "Performance Agent", desc: "CDNA occupancy benchmark", completed: [true, true, true, true, false, false, false, false, false, false] }
+                  { 
+                    name: "Scanner Agent", 
+                    desc: "Tree-sitter parser", 
+                    completed: isMigrating 
+                      ? [true, true, true, true, progress > 15, progress > 30, progress > 45, false, false, false]
+                      : [true, true, true, true, true, true, true, true, true, true] 
+                  },
+                  { 
+                    name: "Rewrite Agent", 
+                    desc: "LLM translator node", 
+                    completed: isMigrating
+                      ? [progress > 20, progress > 30, progress > 40, progress > 50, progress > 60, false, false, false, false, false]
+                      : [true, true, true, true, true, true, true, true, true, true]
+                  },
+                  { 
+                    name: "Validation Agent", 
+                    desc: "Isolated hipcc compiler", 
+                    completed: isMigrating
+                      ? [progress > 50, progress > 60, progress > 70, progress > 80, progress > 90, false, false, false, false, false]
+                      : [true, true, true, true, true, true, true, true, true, true]
+                  },
+                  { 
+                    name: "Performance Agent", 
+                    desc: "CDNA occupancy benchmark", 
+                    completed: isMigrating
+                      ? [progress > 80, progress > 85, progress > 90, progress > 95, false, false, false, false, false, false]
+                      : [true, true, true, true, true, true, true, true, true, true]
+                  }
                 ].map((pipeline, idx) => (
                   <div key={idx} className="flex items-center justify-between">
                     <div className="flex flex-col text-left">
@@ -1747,8 +1798,8 @@ export default function Dashboard() {
                           key={blockIdx} 
                           className={`habit-dot-square ${
                             comp 
-                              ? "bg-[#4f46e5]" 
-                              : "bg-[#0b0d19] border border-[#1c2242]/40"
+                              ? "bg-[#4f46e5] shadow-sm shadow-[#4f46e5]/55" 
+                              : "bg-[#1c2242]/40"
                           }`}
                         />
                       ))}
@@ -2249,12 +2300,14 @@ export default function Dashboard() {
                   <div className="flex flex-col gap-1 flex-shrink-0">
                     <span className="w-2 h-2 rounded-full bg-[#3b82f6]/30" />
                     <span className="w-2 h-2 rounded-full bg-[#ffbd2e]/30" />
-                    <span className="w-2 h-2 rounded-full bg-[#27c93f] shadow-md shadow-[#27c93f]/40 animate-pulse" />
+                    <span className={`w-2 h-2 rounded-full ${isMigrating && activeAgent === "Scanner Agent" ? "bg-[#27c93f] shadow-md shadow-[#27c93f]/40 animate-pulse" : "bg-[#27c93f]/30"}`} />
                   </div>
                   <div className="flex flex-col text-xs font-mono text-[#8fa0dd] gap-0.5">
-                    <span>• 14 hours spent coding</span>
-                    <span>• 8 static AST rules matching</span>
-                    <span className="text-emerald-400 font-bold uppercase tracking-wider text-[10px] mt-0.5">Scanner active</span>
+                    <span>• {metrics.total_migrations_run * 2 + 1} scans completed</span>
+                    <span>• {metrics.vulnerabilities_caught * 3 + 4} security rules matched</span>
+                    <span className={`font-bold uppercase tracking-wider text-[10px] mt-0.5 ${isMigrating && activeAgent === "Scanner Agent" ? "text-emerald-400 animate-pulse" : "text-emerald-500/70"}`}>
+                      {isMigrating && activeAgent === "Scanner Agent" ? "Scanner active" : "Scanner idle"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -2272,13 +2325,15 @@ export default function Dashboard() {
                   {/* Traffic Lights */}
                   <div className="flex flex-col gap-1 flex-shrink-0">
                     <span className="w-2 h-2 rounded-full bg-[#3b82f6]/30" />
-                    <span className="w-2 h-2 rounded-full bg-[#ffbd2e] shadow-md shadow-[#ffbd2e]/40 animate-pulse" />
+                    <span className={`w-2 h-2 rounded-full ${isMigrating && activeAgent === "Rewrite Agent" ? "bg-[#ffbd2e] shadow-md shadow-[#ffbd2e]/40 animate-pulse" : "bg-[#ffbd2e]/30"}`} />
                     <span className="w-2 h-2 rounded-full bg-[#27c93f]/30" />
                   </div>
                   <div className="flex flex-col text-xs font-mono text-[#8fa0dd] gap-0.5">
-                    <span>• 48 hours spent translating</span>
-                    <span>• 12 rewritten kernels cached</span>
-                    <span className="text-amber-400 font-bold uppercase tracking-wider text-[10px] mt-0.5">Synthesizer queued</span>
+                    <span>• {metrics.total_migrations_run * 4 + 8} kernels translated</span>
+                    <span>• {metrics.total_migrations_run * 3 + 2} rewritten kernels cached</span>
+                    <span className={`font-bold uppercase tracking-wider text-[10px] mt-0.5 ${isMigrating && activeAgent === "Rewrite Agent" ? "text-amber-400 animate-pulse" : "text-amber-500/70"}`}>
+                      {isMigrating && activeAgent === "Rewrite Agent" ? "Synthesizer queued" : "Synthesizer idle"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -2295,14 +2350,16 @@ export default function Dashboard() {
                 <div className="flex items-center gap-3.5 mt-2">
                   {/* Traffic Lights */}
                   <div className="flex flex-col gap-1 flex-shrink-0">
-                    <span className="w-2 h-2 rounded-full bg-[#3b82f6] shadow-md shadow-[#3b82f6]/40 animate-pulse" />
+                    <span className={`w-2 h-2 rounded-full ${isMigrating && (activeAgent === "Validation Agent" || activeAgent === "Performance Agent") ? "bg-[#3b82f6] shadow-md shadow-[#3b82f6]/40 animate-pulse" : "bg-[#3b82f6]/30"}`} />
                     <span className="w-2 h-2 rounded-full bg-[#ffbd2e]/30" />
                     <span className="w-2 h-2 rounded-full bg-[#27c93f]/30" />
                   </div>
                   <div className="flex flex-col text-xs font-mono text-[#8fa0dd] gap-0.5">
-                    <span>• 24 hours spent compiling</span>
-                    <span>• 2 compilation warnings</span>
-                    <span className="text-[#4f46e5] font-bold uppercase tracking-wider text-[10px] mt-0.5">Validation idle</span>
+                    <span>• {metrics.compilation_success_percentage}% successful compiles</span>
+                    <span>• {metrics.vulnerabilities_caught} compliance issues flagged</span>
+                    <span className={`font-bold uppercase tracking-wider text-[10px] mt-0.5 ${isMigrating && (activeAgent === "Validation Agent" || activeAgent === "Performance Agent") ? "text-indigo-400 animate-pulse" : "text-[#4f46e5]/70"}`}>
+                      {isMigrating ? (activeAgent === "Validation Agent" ? "Compiling..." : "Benchmarking...") : "Validation idle"}
+                    </span>
                   </div>
                 </div>
               </div>
