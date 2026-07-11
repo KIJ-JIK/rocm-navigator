@@ -411,7 +411,7 @@ export default function Dashboard() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [fireworksKey, setFireworksKey] = useState("");
   const [targetGpu, setTargetGpu] = useState("AMD Instinct MI300X");
-  const [forceSimulation, setForceSimulation] = useState(true);
+  const [forceSimulation, setForceSimulation] = useState(false);
 
   // History Panel State
   const [selectedPassIdx, setSelectedPassIdx] = useState(0);
@@ -733,7 +733,7 @@ export default function Dashboard() {
   // Load gateway metrics on landing page loading
   useEffect(() => {
     if (authState === "landing") {
-      fetch("http://localhost:8000/api/v1/dashboard/metrics")
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/v1/dashboard/metrics`)
         .then(res => res.json())
         .then(data => {
           if (data) {
@@ -870,10 +870,11 @@ export default function Dashboard() {
     }
 
     // --- Step 1: POST to /migrate/upload to register session & trigger git clone ---
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
     let sessionId: string;
     setIsCloning(true); // show spinner on input bar while clone is in-flight
     try {
-      const uploadRes = await fetch("http://localhost:8000/api/v1/migrate/upload", {
+      const uploadRes = await fetch(`${apiUrl}/api/v1/migrate/upload`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -898,7 +899,9 @@ export default function Dashboard() {
     }
 
     // --- Step 2: Open WebSocket using the real session_id from the gateway ---
-    const ws = new WebSocket(`ws://localhost:8000/api/v1/dashboard/topology-stream/${sessionId}`);
+    const wsProtocol = apiUrl.startsWith("https") ? "wss" : "ws";
+    const wsHost = apiUrl.replace(/^https?:\/\//, "");
+    const ws = new WebSocket(`${wsProtocol}://${wsHost}/api/v1/dashboard/topology-stream/${sessionId}`);
     wsRef.current = ws;
 
     ws.onopen = () => {
