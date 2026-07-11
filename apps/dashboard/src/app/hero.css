@@ -945,3 +945,308 @@
   opacity: 0.25 !important;
 }
 
+/* ============================================================
+   LIGHT THEME — ENHANCED CONTRAST & COLOR DIFFERENTIATION
+   Editor, Pipeline, Team Cards, Telemetry, Code, History
+   ============================================================ */
+
+/* ---- EDITOR HEADER BAR ---- */
+.light-theme header[class*="bg-[#0b0d19]"],
+.light-theme header[class*="border-b"] {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-bottom-color: rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Editor/Executions tab container */
+.light-theme div[class*="bg-[#0b0d19]"][class*="rounded-md"] {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Active tab */
+.light-theme button[class*="bg-[#4f46e5]/20"] {
+  background-color: rgba(37, 99, 235, 0.12) !important;
+  color: #1e40af !important;
+}
+
+/* Share / Save buttons */
+.light-theme button[class*="bg-[#0b0d19]/60"][class*="border"] {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+  color: #334155 !important;
+}
+.light-theme button[class*="bg-[#0b0d19]/60"][class*="border"]:hover {
+  background-color: rgba(239, 246, 255, 0.95) !important;
+}
+
+/* ---- REPO URL INPUT ---- */
+.light-theme div[class*="bg-[#0b0d19]/80"],
+.light-theme div[class*="bg-[#0b0d19]/90"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+/* ---- PIPELINE FLOW CONTAINER ---- */
+.light-theme div[class*="bg-[#0b0d19]/60"][class*="h-[380px]"] {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06) !important;
+}
+
+/* Pipeline inner canvas */
+.light-theme div[class*="bg-[#0b0d19]/45"] {
+  background-color: rgba(248, 250, 252, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* ReactFlow canvas override */
+.light-theme .react-flow__background {
+  background-color: #f8fafc !important;
+}
+
+.light-theme .react-flow__background pattern circle {
+  fill: rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-theme .react-flow__edge-path {
+  stroke: rgba(37, 99, 235, 0.3) !important;
+}
+
+.light-theme .react-flow__controls {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.light-theme .react-flow__controls button {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-theme .react-flow__controls button:hover {
+  background-color: #eff6ff !important;
+}
+
+/* ---- PIPELINE NODES (AgentFlow CustomAgentNode) ---- */
+/* Default/idle nodes */
+.light-theme div[class*="bg-[#1b080b]"],
+.light-theme div[class*="border-[#4e1c22]"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Active pipeline node */
+.light-theme div[class*="bg-[#2d1115]"] {
+  background-color: rgba(254, 242, 242, 0.95) !important;
+  border-color: rgba(220, 38, 38, 0.4) !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 12px rgba(220, 38, 38, 0.12) !important;
+}
+
+/* Node icon container */
+.light-theme div[class*="bg-[#150507]"] {
+  background-color: rgba(241, 245, 249, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Node text */
+.light-theme span[class*="text-[#9d7d82]"] {
+  color: #64748b !important;
+}
+
+/* Node handles */
+.light-theme .react-flow__handle {
+  background-color: #2563eb !important;
+  border-color: rgba(37, 99, 235, 0.4) !important;
+}
+
+/* ---- TEAM CARDS — DISTINCT COLORS ---- */
+/* Scanner Team - Blue accent */
+.light-theme div[class*="bg-[#12162b]/50"]:nth-child(1) {
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(219, 234, 254, 0.8)) !important;
+  border: 1.5px solid rgba(37, 99, 235, 0.25) !important;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08) !important;
+}
+
+/* Translation Team - Red/Rose accent */
+.light-theme div[class*="bg-[#12162b]/50"]:nth-child(2) {
+  background: linear-gradient(135deg, rgba(255, 241, 242, 0.95), rgba(254, 226, 226, 0.8)) !important;
+  border: 1.5px solid rgba(220, 38, 38, 0.2) !important;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.06) !important;
+}
+
+/* Verification Team - Purple/Indigo accent */
+.light-theme div[class*="bg-[#12162b]/50"]:nth-child(3) {
+  background: linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(237, 233, 254, 0.8)) !important;
+  border: 1.5px solid rgba(99, 102, 241, 0.25) !important;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08) !important;
+}
+
+/* All team cards — avatar border fix */
+.light-theme div[class*="bg-[#12162b]/50"] .avatar-group-stack div {
+  border-color: #ffffff !important;
+}
+
+/* ---- TELEMETRY SECTION ---- */
+/* Outer telemetry container */
+.light-theme section[class*="bg-[#0f1225]"] {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Telemetry header bar */
+.light-theme div[class*="bg-[#0b0d19]/30"][class*="border-b"] {
+  background-color: rgba(239, 246, 255, 0.7) !important;
+  border-bottom-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+/* Console header */
+.light-theme div[class*="bg-[#0b0d19]/20"][class*="border-b"] {
+  background-color: rgba(248, 250, 252, 0.9) !important;
+  border-bottom-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Console logs body */
+.light-theme div[class*="bg-[#06070d]/60"] {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+  color: #1e293b !important;
+}
+
+/* Console log item border */
+.light-theme div[class*="border-l"][class*="border-[#4f46e5]/30"] {
+  border-left-color: rgba(37, 99, 235, 0.25) !important;
+}
+.light-theme div[class*="border-l"][class*="hover:bg-[#4f46e5]/10"]:hover {
+  background-color: rgba(239, 246, 255, 0.6) !important;
+}
+
+/* Console bg area */
+.light-theme div[class*="bg-[#0b0d19]/10"] {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ---- CODE DIFF PANELS ---- */
+/* CUDA source panel (left) */
+.light-theme div[class*="border-r"][class*="border-[#4f46e5]/30"][class*="overflow-y-auto"] {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+}
+
+/* HIP target panel (right) bg */
+.light-theme div[class*="bg-[#0b0d19]/20"][class*="overflow-y-auto"],
+.light-theme div[class*="bg-[#1a0709]/10"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Code sticky headers */
+.light-theme div[class*="bg-[#0b0d19]/60"][class*="sticky"] {
+  background-color: rgba(241, 245, 249, 0.95) !important;
+  border-bottom-color: rgba(37, 99, 235, 0.1) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Code <pre> blocks */
+.light-theme pre[class*="text-[#F0E7D5]"],
+.light-theme pre[class*="text-white"],
+.light-theme pre[class*="bg-[#0b0d19]"] {
+  background-color: transparent !important;
+  color: #1e293b !important;
+}
+
+/* Diff footer bar */
+.light-theme div[class*="bg-[#12162b]/50"][class*="border-t"] {
+  background-color: rgba(239, 246, 255, 0.8) !important;
+  border-top-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+/* File tabs */
+.light-theme button[class*="bg-[#1c203b]"] {
+  background-color: rgba(37, 99, 235, 0.1) !important;
+  border-color: rgba(37, 99, 235, 0.3) !important;
+  color: #1e40af !important;
+}
+
+/* ---- HISTORY PAGE CARDS ---- */
+/* Empty state panel */
+.light-theme div[class*="bg-[#12162b]/30"][class*="border-dashed"] {
+  background-color: rgba(248, 250, 252, 0.8) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Search input on history page */
+.light-theme div[class*="bg-[#0b0d19]/60"][class*="rounded-full"] {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+}
+
+/* Guest mode panel */
+.light-theme div[class*="bg-[#12162b]/30"][class*="backdrop-blur"] {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+/* History card image containers */
+.light-theme div[class*="bg-gradient-to-br"] {
+  opacity: 0.85;
+}
+
+/* ---- EMULATOR BADGE ---- */
+.light-theme div[class*="bg-[#4f46e5]/10"] {
+  background-color: rgba(37, 99, 235, 0.08) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+/* ---- EMERALD STATUS BADGES ---- */
+.light-theme span[class*="bg-emerald-900/40"] {
+  background-color: rgba(5, 150, 105, 0.08) !important;
+  border-color: rgba(5, 150, 105, 0.2) !important;
+}
+
+.light-theme span[class*="text-emerald-400"] {
+  color: #059669 !important;
+}
+
+.light-theme div[class*="bg-emerald-950/20"] {
+  background-color: rgba(5, 150, 105, 0.06) !important;
+  border-color: rgba(5, 150, 105, 0.15) !important;
+}
+.light-theme div[class*="text-emerald-400"] {
+  color: #059669 !important;
+}
+
+/* ---- AMBER / WARNING STATUS ---- */
+.light-theme span[class*="text-amber-400"],
+.light-theme span[class*="text-amber-500"] {
+  color: #d97706 !important;
+}
+
+/* ---- INDIGO STATUS ---- */
+.light-theme span[class*="text-indigo-400"] {
+  color: #4f46e5 !important;
+}
+
+/* ---- BLUR OVERLAY FIX ---- */
+.light-theme div[class*="blur-[120px]"] {
+  background-color: rgba(37, 99, 235, 0.04) !important;
+}
+
+/* ---- LANDING PAGE SPECIFIC FIXES ---- */
+/* Separator dot */
+.light-theme span[class*="bg-[#1c2242]"] {
+  background-color: rgba(37, 99, 235, 0.3) !important;
+}
+
+/* Pulse indicator dots */
+.light-theme span[class*="bg-[#4f46e5]"][class*="animate-pulse"] {
+  background-color: #2563eb !important;
+}
+
+/* ---- DOWNLOAD BUTTON ---- */
+.light-theme button[class*="bg-[#cc4155]"] {
+  color: #ffffff !important;
+}
+
