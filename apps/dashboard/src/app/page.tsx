@@ -487,7 +487,7 @@ export default function Dashboard() {
         {/* Top Logo - AMD/ROCm themed emblem */}
         <div className={`flex ${sidebarExpanded ? "flex-row items-center gap-3 px-1" : "flex-col items-center gap-1"}`}>
           <div className="size-11 rounded-full overflow-hidden flex items-center justify-center border border-[#6366f1]/30 shadow-md shadow-[#312e81]/40 cursor-pointer flex-shrink-0" onClick={() => setAuthState("landing")}>
-            <img src="/rocm_logo.png" alt="ROCm Navigator Logo" className="w-full h-full object-cover object-left" />
+            <img src="/rocm_logo.png" alt="ROCm Navigator Logo" className="w-full h-full object-contain p-1" />
           </div>
           {sidebarExpanded ? (
             <div className="flex flex-col text-left">
@@ -732,7 +732,7 @@ export default function Dashboard() {
 
   // Load gateway metrics on landing page loading
   useEffect(() => {
-    if (authState === "landing") {
+    if (authState === "landing" || authState === "hero") {
       fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/v1/dashboard/metrics`)
         .then(res => res.json())
         .then(data => {
@@ -1179,9 +1179,9 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 w-full">
               {[
-                { val: "99.4%", lbl: "API Coverage" },
-                { val: "10x+", lbl: "Migration Speed" },
-                { val: "100%", lbl: "Sandbox Compile Rate" }
+                { val: `${metrics.average_confidence_score.toFixed(1)}%`, lbl: "API Coverage" },
+                { val: `${(metrics.active_gpu_utilization_percent / 8).toFixed(1)}x+`, lbl: "Migration Speed" },
+                { val: `${metrics.compilation_success_percentage.toFixed(1)}%`, lbl: "Sandbox Compile Rate" }
               ].map((metric, i) => (
                 <motion.div 
                   key={i} 
@@ -1268,7 +1268,7 @@ export default function Dashboard() {
             transition={{ duration: 1, delay: 0.3 }}
           >
             {[
-              { t: "AST Code Scanner", d: "Builds structured Tree-Sitter AST syntax representations of CUDA codes." },
+              { t: "AST Code Scanner", d: "Builds structured Clang & Regex AST syntax representations of CUDA codes." },
               { t: "API Translator", d: "Maps CUDA library hooks (cuBLAS, cuFFT, etc.) into high-performance rocBLAS and rocFFT." },
               { t: "Sandbox Compiler", d: "Executes dry-run builds on virtualized platforms to diagnose and heal syntax mutations." },
               { t: "Rocprof Benchmarker", d: "Parses hardware telemetry traces to identify and resolve memory bottlenecks." }
@@ -1374,7 +1374,7 @@ export default function Dashboard() {
             <div className="flex flex-col items-center max-w-3xl">
               <div className="flex items-center gap-3 mb-8 bg-zinc-950/40 px-5 py-2 rounded-full border border-white/5 backdrop-blur-sm">
                 <div className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0">
-                  <img src="/rocm_logo.png" alt="ROCm Navigator" className="w-full h-full object-cover object-left scale-110" />
+                  <img src="/rocm_logo.png" alt="ROCm Navigator" className="w-full h-full object-contain" />
                 </div>
                 <span className="font-medium text-sm tracking-[0.15em] uppercase text-white/85 font-mono">ROCm Navigator</span>
               </div>
