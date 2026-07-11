@@ -32,6 +32,67 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from shared.database.db import Database
 
+# Add service directories to path for direct inline usage when microservices are offline
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "services", "core-scanner")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "services", "llm-synthesis")))
+
+try:
+    from parser import CudaParser
+    SCANNER_INLINE = True
+except ImportError:
+    SCANNER_INLINE = False
+
+try:
+    from analyzer import ArchitectureAnalyzer
+    ANALYZER_INLINE = True
+except ImportError:
+    ANALYZER_INLINE = False
+
+try:
+    from rewrite import CodeRewriter
+    REWRITER_INLINE = True
+except ImportError:
+    REWRITER_INLINE = False
+
+import re as _re
+
+def _inline_regex_translate(cuda_code: str) -> str:
+    """Regex-based CUDA→HIP translation fallback embedded directly in the gateway."""
+    t = cuda_code
+    # Header swap
+    t = t.replace("#include <cuda_runtime.h>", "#include <hip/hip_runtime.h>")
+    t = t.replace("#include <cuda.h>", "#include <hip/hip_runtime.h>")
+    t = t.replace("<cuda_runtime.h>", "<hip/hip_runtime.h>")
+    # Memory API
+    for cuda_api, hip_api in [
+        ("cudaMalloc", "hipMalloc"), ("cudaMemcpy", "hipMemcpy"), ("cudaFree", "hipFree"),
+        ("cudaMemset", "hipMemset"), ("cudaMallocManaged", "hipMallocManaged"),
+        ("cudaDeviceSynchronize", "hipDeviceSynchronize"),
+        ("cudaMemcpyHostToDevice", "hipMemcpyHostToDevice"),
+        ("cudaMemcpyDeviceToHost", "hipMemcpyDeviceToHost"),
+        ("cudaMemcpyDeviceToDevice", "hipMemcpyDeviceToDevice"),
+    ]:
+        t = t.replace(cuda_api, hip_api)
+    # Thread dimensions
+    for dim in ["x", "y", "z"]:
+        t = t.replace(f"threadIdx.{dim}", f"hipThreadIdx_{dim}")
+        t = t.replace(f"blockIdx.{dim}", f"hipBlockIdx_{dim}")
+        t = t.replace(f"blockDim.{dim}", f"hipBlockDim_{dim}")
+        t = t.replace(f"gridDim.{dim}", f"hipGridDim_{dim}")
+    # Kernel launches
+    t = _re.sub(
+        r"(\w+)\s*<<<\s*([^>]+)\s*>>>\s*\(([^)]*)\)",
+        r"hipLaunchKernelGGL(\1, \2, 0, 0, \3)",
+        t
+    )
+    # Dynamic shared memory
+    t = _re.sub(
+        r"extern\s+__shared__\s+(\w+)\s+(\w+)\[\s*\]\s*;",
+        r"HIP_DYNAMIC_SHARED(\1, \2)",
+        t
+    )
+    return t
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("gateway")
@@ -722,10 +783,29 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
                        f"Extracted {len(scanner_results['kernels'])} kernels, "
                        f"{len(scanner_results['memory_calls'])} memory APIs.")
         except ConnectionError:
-            logger.warning("Scanner Service offline. Falling back to simulation.")
-            scanner_results = {"file": "vector_add.cu", "lines_count": 18, "kernels": [{"name": "vectorAdd"}], "memory_calls": [{"api": "cudaMalloc"}]}
-            all_file_results = [scanner_results]
-            log = "Scanner Service Offline - Using simulated Scanner outputs."
+            logger.warning("Scanner Service offline. Attempting inline parsing...")
+            if SCANNER_INLINE and cloned_dir:
+                logger.info(f"Using inline CudaParser on cloned repo: {cloned_dir}")
+                all_file_results = CudaParser.parse_directory(cloned_dir)
+                files_scanned = len(all_file_results)
+                scanner_results = None
+                if target_file:
+                    normalized_target = target_file.replace("\\", "/")
+                    scanner_results = next((f for f in all_file_results if f.get("file", "").replace("\\", "/") == normalized_target or f.get("file", "").replace("\\", "/").endswith("/" + normalized_target)), None)
+                if not scanner_results:
+                    scanner_results = all_file_results[0] if all_file_results else {"file": "(empty repo)", "lines_count": 0, "source_code": SAMPLE_CUDA, "kernels": [], "memory_calls": [], "launches": [], "barriers": [], "intrinsics": [], "warp_votes": []}
+                total_kernels = sum(len(f.get("kernels", [])) for f in all_file_results)
+                total_mem = sum(len(f.get("memory_calls", [])) for f in all_file_results)
+                log = f"Inline scan: {files_scanned} file(s). Kernels: {total_kernels}, memory APIs: {total_mem}."
+            elif SCANNER_INLINE:
+                logger.info("Using inline CudaParser on sample code.")
+                scanner_results = CudaParser.parse_code_string(SAMPLE_CUDA, "vector_add.cu")
+                all_file_results = [scanner_results]
+                log = f"Inline parsed sample. Kernels: {len(scanner_results['kernels'])}, memory APIs: {len(scanner_results['memory_calls'])}."
+            else:
+                scanner_results = {"file": "vector_add.cu", "lines_count": 18, "source_code": SAMPLE_CUDA, "kernels": [{"name": "vectorAdd"}], "memory_calls": [{"api": "cudaMalloc"}], "launches": [], "barriers": [], "intrinsics": [], "warp_votes": []}
+                all_file_results = [scanner_results]
+                log = "Scanner Service Offline - Using simulated Scanner outputs."
         await send_state("SCANNING", "Scanner Agent", 15.0, log)
 
         # STEP 2: Architecture Agent (port 8001)
@@ -735,9 +815,18 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
             graph_analysis = call_service(8001, "/api/v1/scanner/dependency-graph", {"file_results": all_file_results})
             log = f"Analyzed call graph. Health Score: {graph_analysis['health_score']}%. Difficulty Score: {graph_analysis['difficulty_score']}%."
         except ConnectionError:
-            logger.warning("Scanner Service offline (Architecture). Falling back to simulation.")
-            graph_analysis = {"health_score": 100, "difficulty_score": 25, "warnings": []}
-            log = "Architecture Service Offline - Mapping call dependencies statically."
+            logger.warning("Scanner Service offline (Architecture). Attempting inline analysis...")
+            if ANALYZER_INLINE:
+                try:
+                    graph_analysis = ArchitectureAnalyzer.analyze_repository_tokens(all_file_results)
+                    log = f"Inline analysis complete. Health: {graph_analysis['health_score']}%. Difficulty: {graph_analysis['difficulty_score']}%."
+                except Exception as e:
+                    logger.warning(f"Inline analyzer failed: {e}")
+                    graph_analysis = {"health_score": 100, "difficulty_score": 25, "warnings": [], "call_topology": {}}
+                    log = "Architecture analysis fell back to defaults."
+            else:
+                graph_analysis = {"health_score": 100, "difficulty_score": 25, "warnings": [], "call_topology": {}}
+                log = "Architecture Service Offline - Mapping call dependencies statically."
         await send_state("ANALYZING", "Architecture Agent", 30.0, log)
 
         # Apply call_topology adjacency sorting to determine the correct order of kernel rewrites across files
@@ -770,9 +859,24 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
             topo_note = f" Topology warnings: {len(graph_analysis.get('warnings', []))}. Difficulty: {graph_analysis.get('difficulty_score', '?')}%." if graph_analysis else ""
             log = f"Translated {scanner_results.get('file', 'source')} successfully. Mapped functions: {mapped}.{topo_note}"
         except ConnectionError:
-            logger.warning("Synthesis Service offline. Falling back to simulation.")
-            translation_results = {"translated_code": source_code_for_rewrite.replace("cudaMalloc", "hipMalloc").replace("cudaFree", "hipFree").replace("cudaMemcpy", "hipMemcpy").replace("<<<", "/* hipLaunch */"), "context_referenced": ["cudaMalloc"]}
-            log = "Synthesis Service Offline - Swapping CUDA identifiers using fallback translators."
+            logger.warning("Synthesis Service offline. Attempting inline translation...")
+            translated_code = None
+            if REWRITER_INLINE:
+                try:
+                    rewriter = CodeRewriter()
+                    translated_code = rewriter.translate_cuda_to_hip(source_code_for_rewrite, [], topology=graph_analysis)
+                    log = f"Inline translation of {scanner_results.get('file', 'source')} complete (Fireworks AI or regex fallback)."
+                except Exception as e:
+                    logger.warning(f"Inline rewriter failed: {e}")
+            if not translated_code:
+                translated_code = _inline_regex_translate(source_code_for_rewrite)
+                log = "Inline regex translation applied (no LLM service available)."
+            # Detect which CUDA APIs were mapped
+            mapped_apis = []
+            for api in ["cudaMalloc", "cudaMemcpy", "cudaFree", "cudaMemset", "cudaDeviceSynchronize"]:
+                if api in source_code_for_rewrite:
+                    mapped_apis.append(api)
+            translation_results = {"translated_code": translated_code, "context_referenced": mapped_apis}
         await send_state("REWRITING", "Rewrite Agent", 55.0, log)
 
         # STEP 3b: Explainability Agent (port 8002)
