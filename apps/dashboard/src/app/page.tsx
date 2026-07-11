@@ -412,6 +412,26 @@ export default function Dashboard() {
   const [fireworksKey, setFireworksKey] = useState("");
   const [targetGpu, setTargetGpu] = useState("AMD Instinct MI300X");
   const [forceSimulation, setForceSimulation] = useState(false);
+  
+  // Custom Nodes adding state
+  const [customNodes, setCustomNodes] = useState<{ name: string; desc: string; completed: boolean[] }[]>([]);
+  const [newNodeName, setNewNodeName] = useState("");
+  const [newNodeDesc, setNewNodeDesc] = useState("");
+
+  const handleAddNode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNodeName.trim()) return;
+    const node = {
+      name: newNodeName.trim(),
+      desc: newNodeDesc.trim() || "Custom pipeline agent",
+      completed: [true, true, true, false, false, false, false, false, false, false]
+    };
+    setCustomNodes(prev => [...prev, node]);
+    setNewNodeName("");
+    setNewNodeDesc("");
+    setLogMessages(prev => [...prev, `[System] Registered custom pipeline node: ${node.name}`]);
+    alert(`Custom Pipeline Node "${node.name}" added successfully!`);
+  };
 
   // History Panel State
   const [selectedPassIdx, setSelectedPassIdx] = useState(0);
@@ -1899,7 +1919,8 @@ export default function Dashboard() {
                     completed: isMigrating
                       ? [progress > 80, progress > 85, progress > 90, progress > 95, false, false, false, false, false, false]
                       : [true, true, true, true, true, true, true, true, true, true]
-                  }
+                  },
+                  ...customNodes
                 ].map((pipeline, idx) => (
                   <div key={idx} className="flex items-center justify-between">
                     <div className="flex flex-col text-left">
@@ -2245,11 +2266,39 @@ export default function Dashboard() {
                     className="h-4 w-4 rounded border-[#1c2242]/30 text-[#4f46e5] focus:ring-[#4f46e5] bg-[#0b0d19]"
                   />
                 </div>
+                {/* Add Custom Node Section */}
+                <form onSubmit={handleAddNode} className="flex flex-col gap-2.5 border-t border-[#1c2242]/20 pt-4 mt-2">
+                  <label className="text-[9px] font-bold text-[#8fa0dd]/60 uppercase tracking-wide">Add Pipeline Agent Node</label>
+                  <input 
+                    type="text"
+                    required
+                    placeholder="Agent Node Name (e.g. Compliance Agent)..."
+                    value={newNodeName}
+                    onChange={(e) => setNewNodeName(e.target.value)}
+                    className="w-full bg-[#0b0d19]/60 border border-[#1c2242]/30 rounded px-2.5 py-1.5 text-[10px] text-zinc-300 outline-none"
+                  />
+                  <input 
+                    type="text"
+                    placeholder="Description (e.g. Security scanner)..."
+                    value={newNodeDesc}
+                    onChange={(e) => setNewNodeDesc(e.target.value)}
+                    className="w-full bg-[#0b0d19]/60 border border-[#1c2242]/30 rounded px-2.5 py-1.5 text-[10px] text-zinc-300 outline-none"
+                  />
+                  <button 
+                    type="submit"
+                    className="w-full py-1.5 bg-[#4f46e5]/80 hover:bg-[#4f46e5] text-white text-[10px] font-bold rounded transition-all cursor-pointer border-none"
+                  >
+                    Add Node +
+                  </button>
+                </form>
               </div>
             </div>
 
             <button 
-              onClick={() => setSettingsOpen(false)}
+              onClick={() => {
+                alert(`Workspace settings saved successfully!\n- Target hardware: ${targetGpu}\n- Force Simulation Mode: ${forceSimulation ? "ENABLED" : "DISABLED"}`);
+                setSettingsOpen(false);
+              }}
               className="w-full py-2 bg-[#4f46e5] hover:bg-[#6366f1] text-white text-xs font-bold rounded-full transition-all duration-200 border-none cursor-pointer outline-none shadow-md shadow-[#4f46e5]/20"
             >
               Apply Configurations
