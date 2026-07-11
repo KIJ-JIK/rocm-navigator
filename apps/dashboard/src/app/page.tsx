@@ -2109,7 +2109,7 @@ export default function Dashboard() {
                         <div
                           key={pass.originalIndex}
                           onClick={() => setSelectedPassIdx(pass.originalIndex)}
-                          className={`relative p-4 rounded-2xl border flex flex-col gap-3 cursor-pointer transition-all duration-200 ${isSelected ? "border-[#4f46e5]/50 bg-[#1c203b]/80 shadow-lg shadow-[#4f46e5]/10" : "border-[#1c2242]/30 bg-[#12162b]/60 hover:border-[#6366f1]/30 hover:bg-[#1c203b]/30"}`}
+                          className={`relative p-4 rounded-2xl border flex flex-col gap-3 cursor-pointer transition-all duration-200 history-pass-card ${isSelected ? "border-[#4f46e5]/50 bg-[#1c203b]/80 shadow-lg shadow-[#4f46e5]/10 selected" : "border-[#1c2242]/30 bg-[#12162b]/60 hover:border-[#6366f1]/30 hover:bg-[#1c203b]/30"}`}
                         >
                           {/* Preview banner with code snippets */}
                           <div className={`h-24 rounded-xl relative overflow-hidden flex items-center justify-center bg-gradient-to-br ${accentColors[pass.originalIndex % accentColors.length]} to-transparent border border-[#1c2242]/20`}>
@@ -2477,7 +2477,7 @@ export default function Dashboard() {
             {/* Team Cards Section */}
             <div className="w-full z-10 grid grid-cols-1 md:grid-cols-3 gap-4 flex-shrink-0">
               {/* Design Team / Scanner Team Card */}
-              <div className="p-3.5 rounded-xl border border-[#4f46e5]/40 bg-[#12162b]/50 backdrop-blur-md shadow-lg flex flex-col justify-between min-h-[95px] hover:border-[#cc4155]/40 transition-colors">
+              <div className="p-3.5 rounded-xl border border-[#4f46e5]/40 bg-[#12162b]/50 backdrop-blur-md shadow-lg flex flex-col justify-between min-h-[95px] hover:border-[#cc4155]/40 transition-colors team-card team-card-scanner">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-bold text-white uppercase tracking-wider">Scanner Team</span>
                   <div className="avatar-group-stack">
@@ -2503,7 +2503,7 @@ export default function Dashboard() {
               </div>
 
               {/* Programming Team / Translation Team Card */}
-              <div className="p-3.5 rounded-xl border border-[#4f46e5]/40 bg-[#12162b]/50 backdrop-blur-md shadow-lg flex flex-col justify-between min-h-[95px] hover:border-[#cc4155]/40 transition-colors">
+              <div className="p-3.5 rounded-xl border border-[#4f46e5]/40 bg-[#12162b]/50 backdrop-blur-md shadow-lg flex flex-col justify-between min-h-[95px] hover:border-[#cc4155]/40 transition-colors team-card team-card-translation">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-bold text-white uppercase tracking-wider">Translation Team</span>
                   <div className="avatar-group-stack">
@@ -2529,7 +2529,7 @@ export default function Dashboard() {
               </div>
 
               {/* Marketing Team / Verification Team Card */}
-              <div className="p-3.5 rounded-xl border border-[#4f46e5]/40 bg-[#12162b]/50 backdrop-blur-md shadow-lg flex flex-col justify-between min-h-[95px] hover:border-[#cc4155]/40 transition-colors">
+              <div className="p-3.5 rounded-xl border border-[#4f46e5]/40 bg-[#12162b]/50 backdrop-blur-md shadow-lg flex flex-col justify-between min-h-[95px] hover:border-[#cc4155]/40 transition-colors team-card team-card-verification">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-bold text-white uppercase tracking-wider">Verification Team</span>
                   <div className="avatar-group-stack">

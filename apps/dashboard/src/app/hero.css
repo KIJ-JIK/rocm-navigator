@@ -1171,27 +1171,217 @@
 }
 
 /* ---- HISTORY PAGE CARDS ---- */
+.light-theme .history-pass-card {
+  background-color: #ffffff !important;
+  border: 2px solid rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+  color: #111827 !important;
+}
+
+.light-theme .history-pass-card:hover {
+  border-color: rgba(37, 99, 235, 0.3) !important;
+  background-color: #f8fafc !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.06) !important;
+}
+
+.light-theme .history-pass-card.selected {
+  background-color: rgba(239, 246, 255, 0.95) !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Preview banner in card */
+.light-theme .history-pass-card div[class*="bg-gradient-to-br"] {
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0) !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+  opacity: 1 !important;
+}
+
+.light-theme .history-pass-card div[class*="bg-gradient-to-br"] div[class*="text-[#F0E7D5]"] {
+  color: #334155 !important;
+  opacity: 0.8 !important;
+}
+
+/* Card titles */
+.light-theme .history-pass-card span[class*="text-white"] {
+  color: #111827 !important;
+  font-weight: bold !important;
+}
+
+.light-theme .history-pass-card span[class*="text-[#8fa0dd]"] {
+  color: #475569 !important;
+}
+
+/* Card metrics */
+.light-theme .history-pass-card div[class*="border-t"] {
+  border-top-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-theme .history-pass-card div[class*="border-x"] {
+  border-left-color: rgba(37, 99, 235, 0.12) !important;
+  border-right-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-theme .history-pass-card span[class*="text-[#F0E7D5]"] {
+  color: #1f2937 !important;
+}
+
+.light-theme .history-pass-card span[class*="text-[#f5be4f]"] {
+  color: #b45309 !important;
+}
+
+.light-theme .history-pass-card div[class*="bg-[#1c203b]"] {
+  background-color: #f1f5f9 !important;
+  border-color: rgba(37, 99, 235, 0.15) !important;
+  color: #475569 !important;
+}
+
+/* SUCCESS / FAIL status inside preview banner */
+.light-theme .history-pass-card span[class*="bg-emerald-950"] {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #059669 !important;
+}
+
+.light-theme .history-pass-card span[class*="bg-red-950"] {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #b91c1c !important;
+}
+
 /* Empty state panel */
 .light-theme div[class*="bg-[#12162b]/30"][class*="border-dashed"] {
-  background-color: rgba(248, 250, 252, 0.8) !important;
-  border-color: rgba(37, 99, 235, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(37, 99, 235, 0.25) !important;
+  color: #334155 !important;
 }
 
 /* Search input on history page */
 .light-theme div[class*="bg-[#0b0d19]/60"][class*="rounded-full"] {
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  border-color: rgba(37, 99, 235, 0.18) !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+}
+.light-theme div[class*="bg-[#0b0d19]/60"] input {
+  color: #111827 !important;
+}
+.light-theme div[class*="bg-[#0b0d19]/60"] input::placeholder {
+  color: #94a3b8 !important;
 }
 
 /* Guest mode panel */
 .light-theme div[class*="bg-[#12162b]/30"][class*="backdrop-blur"] {
-  background-color: rgba(255, 255, 255, 0.85) !important;
-  border-color: rgba(37, 99, 235, 0.15) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
 }
 
-/* History card image containers */
-.light-theme div[class*="bg-gradient-to-br"] {
-  opacity: 0.85;
+/* History inspector card */
+.light-theme .indigo-glass-card[class*="min-h-[300px]"] {
+  background-color: #ffffff !important;
+  border: 2px solid rgba(37, 99, 235, 0.2) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme .indigo-glass-card div[class*="bg-[#151930]"] {
+  background-color: #f8fafc !important;
+  border-bottom-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-theme .indigo-glass-card div[class*="bg-[#0b0d19]"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-bottom-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+.light-theme .indigo-glass-card pre {
+  background-color: #ffffff !important;
+}
+
+.light-theme .indigo-glass-card code {
+  color: #0f172a !important;
+}
+
+.light-theme .indigo-glass-card div[class*="bg-[#0f172a]"] {
+  background-color: #f8fafc !important;
+}
+
+/* ---- TEAM CARDS — DENSE HIGH-CONTRAST DISTINCT COLOURS ---- */
+.light-theme .team-card {
+  background-color: #ffffff !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .team-card span[class*="text-white"] {
+  color: #111827 !important;
+}
+
+.light-theme .team-card span[class*="text-[#8fa0dd]"] {
+  color: #334155 !important;
+}
+
+.light-theme .team-card-scanner {
+  border: 2.5px solid #2563eb !important; /* Strong Blue */
+  background: linear-gradient(135deg, #ffffff, #eff6ff) !important;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.1) !important;
+}
+.light-theme .team-card-scanner span[class*="text-white"] {
+  color: #1e3a8a !important;
+  font-weight: 800 !important;
+}
+
+.light-theme .team-card-translation {
+  border: 2.5px solid #dc2626 !important; /* Strong Red */
+  background: linear-gradient(135deg, #ffffff, #fef2f2) !important;
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.08) !important;
+}
+.light-theme .team-card-translation span[class*="text-white"] {
+  color: #991b1b !important;
+  font-weight: 800 !important;
+}
+
+.light-theme .team-card-verification {
+  border: 2.5px solid #7c3aed !important; /* Strong Purple */
+  background: linear-gradient(135deg, #ffffff, #f5f3ff) !important;
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.08) !important;
+}
+.light-theme .team-card-verification span[class*="text-white"] {
+  color: #6d28d9 !important;
+  font-weight: 800 !important;
+}
+
+/* ---- PIPELINE NODES (AgentFlow CustomAgentNode) ---- */
+.light-theme .custom-agent-node {
+  background-color: #ffffff !important;
+  border: 2.5px solid #2563eb !important; /* Strong Blue borders */
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-theme .custom-agent-node.selected,
+.light-theme .custom-agent-node:hover {
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Inner elements of nodes */
+.light-theme .custom-agent-node-icon {
+  background-color: #eff6ff !important;
+  border: 1px solid rgba(37, 99, 235, 0.3) !important;
+}
+
+.light-theme .custom-agent-node-label {
+  color: #1e293b !important;
+  font-weight: 800 !important;
+}
+
+.light-theme .custom-agent-node-desc {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+/* Handles on nodes */
+.light-theme .react-flow__handle {
+  background-color: #2563eb !important;
+  border: 1.5px solid #ffffff !important;
+  width: 9px !important;
+  height: 9px !important;
 }
 
 /* ---- EMULATOR BADGE ---- */
