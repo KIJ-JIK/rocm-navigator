@@ -111,10 +111,10 @@ app = FastAPI(
     version="1.1.0"
 )
 
-# Enable CORS for the Next.js frontend (port 3000)
+# Enable CORS for the Next.js frontend (allow all origins for deployment compatibility)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
