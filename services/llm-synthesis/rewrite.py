@@ -121,10 +121,11 @@ class CodeRewriter:
         url = "https://api.fireworks.ai/inference/v1/chat/completions"
         headers = {
             "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
         data = {
-            "model": "accounts/fireworks/models/gemma2-9b-it",
+            "model": "accounts/fireworks/models/deepseek-v4-pro",
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -142,6 +143,12 @@ class CodeRewriter:
             completed_text = re.sub(r"^```(cpp|cuda|hip)?\n|```$", "", completed_text, flags=re.MULTILINE)
             return completed_text.strip()
         except Exception as e:
+            print(f"[Synthesis] Fireworks API call failed: {str(e)}. Falling back to regex translation.")
+            if hasattr(e, "read"):
+                try:
+                    print(f"[Synthesis] Error Details: {e.read().decode('utf-8')}")
+                except Exception:
+                    pass
             # Fall back to regex translation if API fails
             return self._perform_fallback_regex_translation(cuda_code)
 
@@ -158,10 +165,11 @@ class CodeRewriter:
         url = "https://api.fireworks.ai/inference/v1/chat/completions"
         headers = {
             "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
         data = {
-            "model": "accounts/fireworks/models/gemma2-9b-it",
+            "model": "accounts/fireworks/models/deepseek-v4-pro",
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -177,5 +185,6 @@ class CodeRewriter:
             completed_text = res_data["choices"][0]["message"]["content"]
             completed_text = re.sub(r"^```(cpp|cuda|hip)?\n|```$", "", completed_text, flags=re.MULTILINE)
             return completed_text.strip()
-        except Exception:
+        except Exception as e:
+            print(f"[Synthesis] self_heal_code Fireworks API call failed: {str(e)}.")
             return broken_code
