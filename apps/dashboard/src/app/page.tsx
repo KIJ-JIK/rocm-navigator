@@ -768,34 +768,76 @@ export default function Dashboard() {
       return;
     }
 
-    // Use localStorage for user storage
-    const storedUsersRaw = localStorage.getItem("rocm_users");
-    const storedUsers: Record<string, string> = storedUsersRaw ? JSON.parse(storedUsersRaw) : {};
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    const endpoint = isSignUp 
+      ? `${apiUrl}/api/v1/auth/register` 
+      : `${apiUrl}/api/v1/auth/session-handshake`;
 
-    if (isSignUp) {
-      // Registration
-      if (storedUsers[username]) {
-        setAuthError("An account with this email already exists. Please sign in.");
-        return;
+    try {
+      // 1. Try to connect to the backend (Supabase / Neon DB)
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.detail || "Authentication failed");
       }
-      storedUsers[username] = password;
-      localStorage.setItem("rocm_users", JSON.stringify(storedUsers));
-      setLogMessages(prev => [...prev, `[Security] Account registered successfully for ${username}. Logging in...`]);
-      setJwtToken("session_" + btoa(username));
-      setAuthState("landing");
-    } else {
-      // Sign in
-      if (!storedUsers[username]) {
-        setAuthError("No account found with this email. Please register first.");
-        return;
+
+      if (data.access_token) {
+        setJwtToken(data.access_token);
+        setLogMessages(prev => [...prev, `[Security] Authenticated via cloud backend as ${username}.`]);
+        setAuthState("landing");
+      } else {
+        // If registration was successful but didn't return a token, automatically log in
+        if (isSignUp) {
+          setIsSignUp(false);
+          const loginRes = await fetch(`${apiUrl}/api/v1/auth/session-handshake`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+          });
+          const loginData = await loginRes.json();
+          if (loginData.access_token) {
+            setJwtToken(loginData.access_token);
+            setAuthState("landing");
+          } else {
+            throw new Error("Login failed after registration");
+          }
+        }
       }
-      if (storedUsers[username] !== password) {
-        setAuthError("Incorrect password. Please try again.");
-        return;
+    } catch (err: any) {
+      // 2. Fallback to localStorage if the backend is unreachable/offline
+      console.warn("Backend auth unavailable. Falling back to local session cache.", err);
+      
+      const storedUsersRaw = localStorage.getItem("rocm_users");
+      const storedUsers: Record<string, string> = storedUsersRaw ? JSON.parse(storedUsersRaw) : {};
+
+      if (isSignUp) {
+        if (storedUsers[username]) {
+          setAuthError("An account with this email already exists. Please sign in.");
+          return;
+        }
+        storedUsers[username] = password;
+        localStorage.setItem("rocm_users", JSON.stringify(storedUsers));
+        setLogMessages(prev => [...prev, `[Local Workspace] Account registered successfully for ${username}.`]);
+        setJwtToken("session_" + btoa(username));
+        setAuthState("landing");
+      } else {
+        if (!storedUsers[username]) {
+          setAuthError("No account found with this email. Please register or start your backend server.");
+          return;
+        }
+        if (storedUsers[username] !== password) {
+          setAuthError("Incorrect password. Please try again.");
+          return;
+        }
+        setLogMessages(prev => [...prev, `[Local Workspace] Authenticated locally as ${username}.`]);
+        setJwtToken("session_" + btoa(username));
+        setAuthState("landing");
       }
-      setLogMessages(prev => [...prev, `[Security] Authenticated successfully as ${username}.`]);
-      setJwtToken("session_" + btoa(username));
-      setAuthState("landing");
     }
   };
 
