@@ -647,3 +647,301 @@
 .mac-dot-maximize { background-color: #27c93f; }
 
 
+/* ============================================================
+   LIGHT THEME — Red & Blue color scheme, black text
+   Applied via .light-theme class on root containers
+   ============================================================ */
+
+/* Root background override */
+.light-theme.indigo-dashboard-root {
+  background: linear-gradient(135deg, #f8f9fc 0%, #eef1f8 40%, #f0f4ff 100%) !important;
+  color: #111827 !important;
+}
+
+/* Sidebar light mode */
+.floating-capsule-sidebar.light-theme {
+  background-color: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  border-right: 1px solid rgba(37, 99, 235, 0.18) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08) !important;
+}
+
+.light-theme .floating-sidebar-icon-btn {
+  color: #475569 !important;
+}
+
+.light-theme .floating-sidebar-icon-btn:hover {
+  color: #1e3a5f !important;
+  background-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.light-theme .floating-sidebar-icon-btn-active {
+  color: #ffffff !important;
+  background-color: #2563eb !important;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
+}
+
+.light-theme .floating-avatar-capsule {
+  background-color: rgba(248, 250, 252, 0.9) !important;
+  border: 1px solid rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Glass cards → clean white cards */
+.light-theme .indigo-glass-card {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(37, 99, 235, 0.12) !important;
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(37, 99, 235, 0.04) !important;
+}
+
+.light-theme .indigo-glass-card-hover:hover {
+  background-color: rgba(239, 246, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.22) !important;
+  box-shadow: 0 8px 32px -4px rgba(37, 99, 235, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.08) !important;
+}
+
+/* Console panel */
+.light-theme .indigo-console-panel {
+  background-color: rgba(248, 250, 252, 0.85) !important;
+  border: 1px solid rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Sidebar panel (settings slide-over) */
+.light-theme .indigo-sidebar {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(24px) !important;
+  border-left: 1px solid rgba(37, 99, 235, 0.15) !important;
+}
+
+/* ---- TEXT COLOR OVERRIDES ---- */
+/* Primary text: black instead of cream/white */
+.light-theme,
+.light-theme .text-\[\#F0E7D5\],
+.light-theme [class*="text-[#F0E7D5]"] {
+  color: #111827 !important;
+}
+
+/* Secondary / muted text */
+.light-theme .text-\[\#8fa0dd\],
+.light-theme [class*="text-[#8fa0dd]"] {
+  color: #475569 !important;
+}
+
+/* White text → black */
+.light-theme .text-white {
+  color: #111827 !important;
+}
+
+/* zinc-300 text → dark gray */
+.light-theme .text-zinc-300 {
+  color: #374151 !important;
+}
+
+.light-theme .text-zinc-400 {
+  color: #6b7280 !important;
+}
+
+.light-theme .text-zinc-500 {
+  color: #6b7280 !important;
+}
+
+/* Preserve white text on colored buttons */
+.light-theme .bg-\[\#4f46e5\] .text-white,
+.light-theme .bg-\[\#2563eb\] .text-white,
+.light-theme button[class*="bg-[#4f46e5]"],
+.light-theme button[class*="bg-[#cc4155]"] {
+  color: #ffffff !important;
+}
+
+/* Accent colors: keep indigo/blue primary, red secondary */
+.light-theme .text-\[\#4f46e5\],
+.light-theme [class*="text-[#4f46e5]"] {
+  color: #2563eb !important;
+}
+
+.light-theme .text-\[\#cc4155\],
+.light-theme [class*="text-[#cc4155]"] {
+  color: #dc2626 !important;
+}
+
+/* ---- BACKGROUND OVERRIDES ---- */
+/* Dark bg panels → light */
+.light-theme [class*="bg-[#090b16]"],
+.light-theme [class*="bg-[#0b0d19]"] {
+  background-color: rgba(241, 245, 249, 0.7) !important;
+}
+
+/* Borders: swap dark borders for light blue ones */
+.light-theme [class*="border-[#1c2242]"] {
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-theme .border-white\/5,
+.light-theme .border-white\/10,
+.light-theme .border-white\/15 {
+  border-color: rgba(37, 99, 235, 0.1) !important;
+}
+
+/* ---- INPUT OVERRIDES ---- */
+.light-theme input,
+.light-theme select,
+.light-theme textarea {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+  color: #111827 !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+}
+
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ---- DECORATIVE ELEMENTS ---- */
+/* Aura text container */
+.light-theme .indigo-aura-text-container {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(37, 99, 235, 0.2) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Slider bar */
+.light-theme .slider-scale-line {
+  background-color: rgba(226, 232, 240, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+.light-theme .slider-scale-fill {
+  background: linear-gradient(to right, #2563eb, #3b82f6) !important;
+}
+
+.light-theme .slider-scale-badge {
+  background-color: rgba(220, 38, 38, 0.9) !important;
+  color: #ffffff !important;
+}
+
+.light-theme .slider-scale-dot {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Habit squares */
+.light-theme .habit-dot-square {
+  opacity: 0.9;
+}
+
+/* Calendar highlights */
+.light-theme .calendar-circle-highlight {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.3) !important;
+}
+
+.light-theme .calendar-circle-scheduled {
+  border-color: rgba(37, 99, 235, 0.35) !important;
+  background-color: rgba(37, 99, 235, 0.06) !important;
+  color: #1e3a5f !important;
+}
+
+/* Fuzzy circles */
+.light-theme .fuzzy-circle-yellow {
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, rgba(220, 38, 38, 0.1) 80%) !important;
+  border-color: rgba(220, 38, 38, 0.25) !important;
+  box-shadow: 0 0 40px rgba(220, 38, 38, 0.15) !important;
+}
+
+.light-theme .fuzzy-circle-red {
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.45) 0%, rgba(37, 99, 235, 0.1) 80%) !important;
+  border-color: rgba(37, 99, 235, 0.25) !important;
+  box-shadow: 0 0 35px rgba(37, 99, 235, 0.15) !important;
+}
+
+.light-theme .fuzzy-circle-black {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Wine glow circles → lighter */
+.light-theme .wine-glow-circle-1 {
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.2) 0%, rgba(220, 38, 38, 0) 70%) !important;
+}
+
+.light-theme .wine-glow-circle-2 {
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0) 70%) !important;
+}
+
+.light-theme .wine-glow-circle-3 {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0) 70%) !important;
+}
+
+/* Avatar stack border */
+.light-theme .avatar-stack-item {
+  border-color: #ffffff !important;
+}
+
+/* ---- BUTTON OVERRIDES ---- */
+/* Primary blue button stays visible */
+.light-theme button[class*="bg-[#4f46e5]"] {
+  background-color: #2563eb !important;
+}
+.light-theme button[class*="bg-[#4f46e5]"]:hover {
+  background-color: #1d4ed8 !important;
+}
+
+/* ---- CODE EDITOR AREA ---- */
+.light-theme .bg-black\/60 {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.light-theme .bg-black\/40 {
+  background-color: rgba(241, 245, 249, 0.6) !important;
+}
+
+/* ---- HIDE VIDEO BACKGROUND IN LIGHT MODE ---- */
+.light-theme video {
+  opacity: 0 !important;
+}
+
+/* ---- SCROLLBAR LIGHT MODE ---- */
+.light-theme ::-webkit-scrollbar {
+  width: 6px;
+}
+.light-theme ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.light-theme ::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.2);
+  border-radius: 3px;
+}
+
+/* ---- MISC TEXT THAT USES INLINE COLORS ---- */
+.light-theme span[class*="text-[#F0E7D5]"],
+.light-theme div[class*="text-[#F0E7D5]"],
+.light-theme p[class*="text-[#F0E7D5]"],
+.light-theme h3[class*="text-[#F0E7D5]"],
+.light-theme label[class*="text-[#F0E7D5]"] {
+  color: #111827 !important;
+}
+
+.light-theme span[class*="text-[#8fa0dd]"],
+.light-theme div[class*="text-[#8fa0dd]"],
+.light-theme p[class*="text-[#8fa0dd]"],
+.light-theme label[class*="text-[#8fa0dd]"] {
+  color: #475569 !important;
+}
+
+/* Code block styling */
+.light-theme pre,
+.light-theme code {
+  background-color: rgba(241, 245, 249, 0.6) !important;
+  color: #1e293b !important;
+}
+
+/* Dot grid overlay in light mode */
+.light-theme .synapse-dot-grid {
+  background-image: radial-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px) !important;
+  opacity: 0.25 !important;
+}
+

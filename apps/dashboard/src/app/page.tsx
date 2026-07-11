@@ -38,7 +38,9 @@ import {
   FileCode,
   AlertTriangle,
   ChevronDown,
-  Hash
+  Hash,
+  Sun,
+  Moon
 } from "lucide-react";
 import { motion, useScroll, useSpring, useTransform, useMotionTemplate } from "framer-motion";
 import { Button } from "@orbit/ui/button";
@@ -409,6 +411,7 @@ export default function Dashboard() {
   
   // Settings Panel State
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [lightTheme, setLightTheme] = useState(false);
   const [fireworksKey, setFireworksKey] = useState("");
   const [targetGpu, setTargetGpu] = useState("AMD Instinct MI300X");
   const [forceSimulation, setForceSimulation] = useState(false);
@@ -574,7 +577,7 @@ export default function Dashboard() {
         onMouseEnter={handleSidebarInteract}
         onMouseMove={handleSidebarInteract}
         onClick={handleSidebarInteract}
-        className={`floating-capsule-sidebar fixed left-0 top-0 z-50 ${sidebarExpanded ? "floating-capsule-sidebar-expanded" : ""}`}
+        className={`floating-capsule-sidebar fixed left-0 top-0 z-50 ${sidebarExpanded ? "floating-capsule-sidebar-expanded" : ""} ${lightTheme ? "light-theme" : ""}`}
       >
         {/* Top Logo - AMD/ROCm themed emblem */}
         <div className={`flex ${sidebarExpanded ? "flex-row items-center gap-3 px-1" : "flex-col items-center gap-1"}`}>
@@ -640,6 +643,20 @@ export default function Dashboard() {
         <div className={`flex flex-col gap-3 w-full ${sidebarExpanded ? "items-stretch px-1" : "items-center"}`}>
           <button
             type="button"
+            onClick={() => setLightTheme(prev => !prev)}
+            className={`floating-sidebar-icon-btn flex items-center ${
+              sidebarExpanded ? "floating-sidebar-icon-btn-expanded" : "justify-center"
+            }`}
+            title={lightTheme ? "Switch to Dark Mode" : "Switch to Light Mode"}
+          >
+            {lightTheme ? <Moon className="h-5 w-5 flex-shrink-0 text-[#1e40af]" /> : <Sun className="h-5 w-5 flex-shrink-0 text-[#f59e0b]" />}
+            {sidebarExpanded && (
+              <span className={`text-xs font-bold tracking-wide uppercase font-mono ${lightTheme ? 'text-[#1e3a5f]' : 'text-[#F0E7D5]/90'}`}>{lightTheme ? 'Dark Mode' : 'Light Mode'}</span>
+            )}
+          </button>
+
+          <button
+            type="button"
             onClick={() => {
               setAuthState("editor");
               setSettingsOpen(true);
@@ -651,7 +668,7 @@ export default function Dashboard() {
           >
             <Settings className="h-5 w-5 flex-shrink-0 text-[#cc4155]" />
             {sidebarExpanded && (
-              <span className="text-xs font-bold tracking-wide text-[#F0E7D5]/90 uppercase font-mono">Settings</span>
+              <span className={`text-xs font-bold tracking-wide uppercase font-mono ${lightTheme ? 'text-[#1e3a5f]' : 'text-[#F0E7D5]/90'}`}>Settings</span>
             )}
           </button>
 
@@ -1686,7 +1703,7 @@ export default function Dashboard() {
   // Render Landing page
   if (authState === "landing") {
     return (
-      <div className="min-h-screen w-full indigo-dashboard-root relative flex overflow-hidden">
+      <div className={`min-h-screen w-full indigo-dashboard-root relative flex overflow-hidden ${lightTheme ? 'light-theme' : ''}`}>
         {/* Floating Capsule Sidebar */}
         {renderSidebar("landing")}
 
@@ -1975,7 +1992,7 @@ export default function Dashboard() {
   // Render History passes tracking view
   if (authState === "history") {
     return (
-      <div className="min-h-screen w-full indigo-dashboard-root relative flex overflow-hidden">
+      <div className={`min-h-screen w-full indigo-dashboard-root relative flex overflow-hidden ${lightTheme ? 'light-theme' : ''}`}>
         <VideoBackground />
 
         {renderSidebar("history")}
@@ -2207,7 +2224,7 @@ export default function Dashboard() {
 
   // Render Editor Canvas
   return (
-    <div className="flex h-screen w-screen overflow-hidden indigo-dashboard-root font-sans relative">
+    <div className={`flex h-screen w-screen overflow-hidden indigo-dashboard-root font-sans relative ${lightTheme ? 'light-theme' : ''}`}>
       <VideoBackground />
       
       {/* Settings slide-over panel */}
