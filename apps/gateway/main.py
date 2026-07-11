@@ -56,9 +56,28 @@ except ImportError:
 
 import re as _re
 
-def _inline_regex_translate(cuda_code: str) -> str:
+def _inline_regex_translate(cuda_code: str, filepath: str = "") -> str:
     """Regex-based CUDA→HIP translation fallback embedded directly in the gateway."""
     t = cuda_code
+    
+    # Python-specific translation swaps (e.g., from cuda import -> from hip import)
+    is_python = filepath.endswith(".py") if filepath else False
+    if is_python:
+        t = t.replace("from cuda.core import", "from hip.core import")
+        t = t.replace("from cuda import", "from hip import")
+        t = t.replace("import cuda.core", "import hip.core")
+        t = t.replace("import cuda", "import hip")
+        t = t.replace("cuda.core", "hip.core")
+        t = t.replace("cuda_samples_utils", "hip_samples_utils")
+        t = t.replace("get_cuda_core_kernels", "get_hip_core_kernels")
+        t = t.replace("cuda.core.Device", "hip.core.Device")
+        t = t.replace("cuda.core.LaunchConfig", "hip.core.LaunchConfig")
+        t = t.replace("cuda.core.launch", "hip.core.launch")
+        # Direct word mappings for Python files
+        t = t.replace("cuda", "hip")
+        t = t.replace("Cuda", "Hip")
+        t = t.replace("CUDA", "HIP")
+
     # Header swap
     t = t.replace("#include <cuda_runtime.h>", "#include <hip/hip_runtime.h>")
     t = t.replace("#include <cuda.h>", "#include <hip/hip_runtime.h>")
@@ -889,12 +908,12 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
             if REWRITER_INLINE:
                 try:
                     rewriter = CodeRewriter()
-                    translated_code = rewriter.translate_cuda_to_hip(source_code_for_rewrite, [], topology=graph_analysis)
+                    translated_code = rewriter.translate_cuda_to_hip(source_code_for_rewrite, [], topology=graph_analysis, filepath=scanner_results.get("file", ""))
                     log = f"Inline translation of {scanner_results.get('file', 'source')} complete (Fireworks AI or regex fallback)."
                 except Exception as e:
                     logger.warning(f"Inline rewriter failed: {e}")
             if not translated_code:
-                translated_code = _inline_regex_translate(source_code_for_rewrite)
+                translated_code = _inline_regex_translate(source_code_for_rewrite, scanner_results.get("file", ""))
                 log = "Inline regex translation applied (no LLM service available)."
             # Detect which CUDA APIs were mapped
             mapped_apis = []

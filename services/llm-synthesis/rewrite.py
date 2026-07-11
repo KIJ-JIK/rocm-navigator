@@ -14,10 +14,28 @@ class CodeRewriter:
     def __init__(self, api_key: str = None):
         self.api_key = api_key or os.getenv("FIREWORKS_API_KEY")
 
-    def _perform_fallback_regex_translation(self, cuda_code: str) -> str:
+    def _perform_fallback_regex_translation(self, cuda_code: str, filepath: str = "") -> str:
         """Regex-based high-fidelity translation when LLM keys are not supplied."""
         translated = cuda_code
         
+        # Python-specific translation swaps (e.g., from cuda import -> from hip import)
+        is_python = filepath.endswith(".py") if filepath else False
+        if is_python:
+            translated = translated.replace("from cuda.core import", "from hip.core import")
+            translated = translated.replace("from cuda import", "from hip import")
+            translated = translated.replace("import cuda.core", "import hip.core")
+            translated = translated.replace("import cuda", "import hip")
+            translated = translated.replace("cuda.core", "hip.core")
+            translated = translated.replace("cuda_samples_utils", "hip_samples_utils")
+            translated = translated.replace("get_cuda_core_kernels", "get_hip_core_kernels")
+            translated = translated.replace("cuda.core.Device", "hip.core.Device")
+            translated = translated.replace("cuda.core.LaunchConfig", "hip.core.LaunchConfig")
+            translated = translated.replace("cuda.core.launch", "hip.core.launch")
+            # Direct word mappings for Python files
+            translated = translated.replace("cuda", "hip")
+            translated = translated.replace("Cuda", "Hip")
+            translated = translated.replace("CUDA", "HIP")
+
         # 1. API Swaps
         translated = translated.replace("cudaMalloc", "hipMalloc")
         translated = translated.replace("cudaMemcpy", "hipMemcpy")
@@ -56,9 +74,9 @@ class CodeRewriter:
         
         return translated
 
-    def translate_cuda_to_hip(self, cuda_code: str, rag_context: List[Dict[str, Any]], topology: Dict[str, Any] = None) -> str:
+    def translate_cuda_to_hip(self, cuda_code: str, rag_context: List[Dict[str, Any]], topology: Dict[str, Any] = None, filepath: str = "") -> str:
         if not self.api_key:
-            return self._perform_fallback_regex_translation(cuda_code)
+            return self._perform_fallback_regex_translation(cuda_code, filepath)
 
         # Build topology-aware hints from Architecture Agent output
         topology_hints = ""
