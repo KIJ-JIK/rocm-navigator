@@ -783,7 +783,8 @@ export default function Dashboard() {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.detail || "Authentication failed");
+        setAuthError(data.detail || "Authentication failed");
+        return;
       }
 
       if (data.access_token) {
@@ -804,7 +805,7 @@ export default function Dashboard() {
             setJwtToken(loginData.access_token);
             setAuthState("landing");
           } else {
-            throw new Error("Login failed after registration");
+            setAuthError("Login failed after registration");
           }
         }
       }
