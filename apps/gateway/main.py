@@ -93,6 +93,29 @@ def _inline_regex_translate(cuda_code: str) -> str:
     )
     return t
 
+def ensure_target_file_parsed(cloned_dir: str, target_file: str, all_file_results: list) -> list:
+    if not target_file or not cloned_dir:
+        return all_file_results
+    
+    target_abs_path = os.path.join(cloned_dir, target_file)
+    if os.path.exists(target_abs_path) and os.path.isfile(target_abs_path):
+        normalized_target = target_file.replace("\\", "/")
+        already_parsed = any(f.get("file", "").replace("\\", "/") == normalized_target for f in all_file_results)
+        if not already_parsed:
+            try:
+                with open(target_abs_path, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+                try:
+                    from parser import CudaParser
+                    parsed = CudaParser.parse_code_string(content, target_file)
+                    all_file_results.append(parsed)
+                    logger.info(f"Explicitly parsed target_file inline: {target_file}")
+                except Exception as parse_err:
+                    logger.warning(f"Could not import or use CudaParser inline: {parse_err}")
+            except Exception as e:
+                logger.warning(f"Failed to explicitly read target_file: {e}")
+    return all_file_results
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("gateway")
@@ -761,7 +784,8 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
                 logger.info(f"Using cloned repo at {cloned_dir} — calling parse-dir.")
                 dir_response = call_service(8001, "/api/v1/scanner/parse-dir", {"directory_path": cloned_dir})
                 all_file_results = dir_response.get("results", [])
-                files_scanned = dir_response.get("files_scanned", len(all_file_results))
+                all_file_results = ensure_target_file_parsed(cloned_dir, target_file, all_file_results)
+                files_scanned = len(all_file_results)
                 # Use first file result for downstream single-file agents; aggregate for graph
                 scanner_results = None
                 if target_file:
@@ -787,6 +811,7 @@ async def topology_websocket_stream(websocket: WebSocket, session_id: str):
             if SCANNER_INLINE and cloned_dir:
                 logger.info(f"Using inline CudaParser on cloned repo: {cloned_dir}")
                 all_file_results = CudaParser.parse_directory(cloned_dir)
+                all_file_results = ensure_target_file_parsed(cloned_dir, target_file, all_file_results)
                 files_scanned = len(all_file_results)
                 scanner_results = None
                 if target_file:
