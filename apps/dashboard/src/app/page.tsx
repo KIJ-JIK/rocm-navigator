@@ -1527,10 +1527,15 @@ export default function Dashboard() {
             </button>
           </div>
 
-          <div className="mt-8 pt-4 border-t border-white/10 flex justify-center gap-4 text-[10px] text-white/40">
-            <button type="button" onClick={() => setActiveModal("terms")} className="hover:text-white transition-colors cursor-pointer bg-transparent border-none">Terms & Conditions</button>
-            <span>|</span>
-            <button type="button" onClick={() => setActiveModal("privacy")} className="hover:text-white transition-colors cursor-pointer bg-transparent border-none">Privacy Policy</button>
+          <div className="mt-8 pt-4 border-t border-white/10 flex flex-col items-center gap-2 text-[10px] text-white/40">
+            <div className="flex gap-4">
+              <button type="button" onClick={() => setActiveModal("terms")} className="hover:text-white transition-colors cursor-pointer bg-transparent border-none">Terms & Conditions</button>
+              <span>|</span>
+              <button type="button" onClick={() => setActiveModal("privacy")} className="hover:text-white transition-colors cursor-pointer bg-transparent border-none">Privacy Policy</button>
+            </div>
+            <div className="font-mono opacity-40 mt-1 text-[9px]">
+              API Endpoint: {process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}
+            </div>
           </div>
         </div>
       </div>
