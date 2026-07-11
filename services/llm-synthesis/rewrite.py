@@ -18,6 +18,12 @@ class CodeRewriter:
         """Regex-based high-fidelity translation when LLM keys are not supplied."""
         translated = cuda_code
         
+        # 0. Header Swaps
+        translated = translated.replace("#include <cuda_runtime.h>", "#include <hip/hip_runtime.h>")
+        translated = translated.replace("#include <cuda.h>", "#include <hip/hip_runtime.h>")
+        translated = translated.replace("#include \"cuda_runtime.h\"", "#include <hip/hip_runtime.h>")
+        translated = translated.replace("#include \"cuda.h\"", "#include <hip/hip_runtime.h>")
+        
         # Python-specific translation swaps (e.g., from cuda import -> from hip import)
         is_python = filepath.endswith(".py") if filepath else False
         if is_python:
@@ -141,6 +147,13 @@ class CodeRewriter:
             completed_text = res_data["choices"][0]["message"]["content"]
             # Clean up potential markdown formatting if returned
             completed_text = re.sub(r"^```(cpp|cuda|hip)?\n|```$", "", completed_text, flags=re.MULTILINE)
+            
+            # Post-processing header cleanup
+            completed_text = completed_text.replace("#include <cuda_runtime.h>", "#include <hip/hip_runtime.h>")
+            completed_text = completed_text.replace("#include <cuda.h>", "#include <hip/hip_runtime.h>")
+            completed_text = completed_text.replace("#include \"cuda_runtime.h\"", "#include <hip/hip_runtime.h>")
+            completed_text = completed_text.replace("#include \"cuda.h\"", "#include <hip/hip_runtime.h>")
+            
             return completed_text.strip()
         except Exception as e:
             print(f"[Synthesis] Fireworks API call failed: {str(e)}. Falling back to regex translation.")
@@ -184,6 +197,13 @@ class CodeRewriter:
                 res_data = json.loads(response.read().decode("utf-8"))
             completed_text = res_data["choices"][0]["message"]["content"]
             completed_text = re.sub(r"^```(cpp|cuda|hip)?\n|```$", "", completed_text, flags=re.MULTILINE)
+            
+            # Post-processing header cleanup
+            completed_text = completed_text.replace("#include <cuda_runtime.h>", "#include <hip/hip_runtime.h>")
+            completed_text = completed_text.replace("#include <cuda.h>", "#include <hip/hip_runtime.h>")
+            completed_text = completed_text.replace("#include \"cuda_runtime.h\"", "#include <hip/hip_runtime.h>")
+            completed_text = completed_text.replace("#include \"cuda.h\"", "#include <hip/hip_runtime.h>")
+            
             return completed_text.strip()
         except Exception as e:
             print(f"[Synthesis] self_heal_code Fireworks API call failed: {str(e)}.")
